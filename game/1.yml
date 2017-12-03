@@ -1,0 +1,11 @@
+---
+turn: 1
+players:
+  - name: bot1
+    resources:
+      gold: 5
+      food: 1
+  - name: bot2
+    resources:
+      gold: 5
+      food: 3

@@ -1,20 +1,20 @@
 pub enum InsideElement {
     Room,
     Hall,
-    RoomHall,
-    RoomRoom,
     MineHall,
+    Mine,
     GemMine,
 }
+
 
 pub enum OutsideElement {
     Meadow,
     Field,
     MeadowField,
-    SmallFenceField,
-    LargeFenceField,
+    FenceField,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub enum ResourceType {
     Gem,
     Food,

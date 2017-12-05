@@ -9,7 +9,7 @@ pub struct Player {
 impl Player {
     pub fn change_resources(&mut self, delta: HashMap<String, i64>) {
         for key in delta.keys().into_iter() {
-            *self.resources.entry(*key).or_insert(0) += *delta.get(key).unwrap();
+            *self.resources.get_mut(key).unwrap() += *delta.get(key).unwrap();
         }
     }
 }
@@ -22,3 +22,4 @@ pub struct Game {
     pub order: Vec<String>,
     pub players: Vec<Player>,
 }
+

@@ -1,21 +1,21 @@
 use std::collections::HashMap;
 
-use models::game::{Game};
+use models::game::{Game, Player};
 
 pub trait MoveAction {
-    fn perform(self, game: &mut Game);
+    fn perform(self, game: &mut Game, players: &mut Vec<Player>);
 }
 
-struct UpdateResources {
-    player: String,
-    update_hash: HashMap<String, i64>,
+pub struct UpdateResources {
+    pub player: String,
+    pub update_hash: HashMap<String, i64>,
 }
 
 impl MoveAction for UpdateResources {
-    fn perform(self, game: &mut Game) {
+    fn perform(self, game: &mut Game, players: &mut Vec<Player>) {
         game.turn += 1;
 
-        let mut player_data = &game.players
+        let mut player_data = players
             .into_iter()
             .find(|player| player.name == self.player)
             .unwrap();

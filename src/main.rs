@@ -8,6 +8,7 @@ extern crate clap;
 mod constants;
 mod models;
 mod moves;
+mod test;
 
 use std::fs;
 use std::path;

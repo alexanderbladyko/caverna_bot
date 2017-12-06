@@ -1,5 +1,10 @@
 ---
 turn: 1
+next: bot1
+first_move: bot1
+order:
+  - bot1
+  - bot2
 players:
   - name: bot1
     resources:

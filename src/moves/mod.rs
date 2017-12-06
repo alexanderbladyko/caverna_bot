@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use models::game::{Game, Player};
 
 pub trait MoveAction {
-    fn perform(self, game: &mut Game, players: &mut Vec<Player>);
+    fn perform(self, game: &mut Game);
 }
 
 pub struct UpdateResources {
@@ -12,13 +12,11 @@ pub struct UpdateResources {
 }
 
 impl MoveAction for UpdateResources {
-    fn perform(self, game: &mut Game, players: &mut Vec<Player>) {
-        game.turn += 1;
-
-        let mut player_data = players
-            .into_iter()
-            .find(|player| player.name == self.player)
-            .unwrap();
-        player_data.change_resources(self.update_hash);
+    fn perform(self, game: &mut Game) {
+        game.players
+            .iter_mut()
+            .find(|p| p.name == self.player)
+            .unwrap()
+            .change_resources(self.update_hash);
     }
 }

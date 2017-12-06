@@ -5,10 +5,10 @@ extern crate serde;
 extern crate serde_yaml;
 extern crate clap;
 
-mod constants;
-mod models;
-mod moves;
-mod test;
+pub mod constants;
+pub mod models;
+pub mod moves;
+pub mod test;
 
 use std::fs;
 use std::path;

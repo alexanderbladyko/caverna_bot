@@ -22,4 +22,3 @@ pub struct Game {
     pub order: Vec<String>,
     pub players: Vec<Player>,
 }
-

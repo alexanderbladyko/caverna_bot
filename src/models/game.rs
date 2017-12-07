@@ -6,28 +6,28 @@ use constants::{InsideElement, OutsideElement};
 #[derive(Serialize, Deserialize, Debug)]
 pub struct PlayerRoom {
     pub room_type: InsideElement,
-    pub position: u16,
+    pub position: u32,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct PlayerField {
     pub field_type: OutsideElement,
-    pub position: u16,
+    pub position: u32,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Player {
     pub name: String,
 
-    pub gnomes: u16,
-    pub child_gnomes: u16,
-    pub moved_gnomes: u16,
+    pub gnomes: u32,
+    pub child_gnomes: u32,
+    pub moved_gnomes: u32,
 
     pub rooms: Vec<PlayerRoom>,
-    pub room_slots_count: u16,
+    pub room_slots_count: u32,
 
     pub fields: Vec<PlayerField>,
-    pub field_slots_count: u16,
+    pub field_slots_count: u32,
 
     pub resources: HashMap<String, u32>,
 }
@@ -39,7 +39,7 @@ impl Player {
         }
     }
 
-    pub fn add_room_slots(&mut self, amount: u16) {
+    pub fn add_room_slots(&mut self, amount: u32) {
         self.room_slots_count += amount;
     }
 
@@ -55,7 +55,7 @@ impl Player {
     }
 
     pub fn add_rooms(&mut self, new_rooms: Vec<PlayerRoom>) {
-        let mut slots: HashSet<u16> = HashSet::from(
+        let mut slots: HashSet<u32> = HashSet::from(
             self.rooms.iter().map(|r| r.position).collect()
         );
         for room in new_rooms.iter() {
@@ -69,7 +69,7 @@ impl Player {
     }
 
     pub fn add_fields(&mut self, new_fields: Vec<PlayerField>) {
-        let mut slots: HashSet<u16> = HashSet::from(
+        let mut slots: HashSet<u32> = HashSet::from(
             self.fields.iter().map(|r| r.position).collect()
         );
         for field in new_fields.iter() {

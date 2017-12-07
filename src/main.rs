@@ -53,10 +53,18 @@ fn _get_last_game_file(config: &Config) -> (String, String) {
     let mut max_file_number = 0_i64;
     for path in paths {
         let file_name = String::from(path.unwrap().file_name().clone().to_str().unwrap());
-        let number: i64 = file_name.trim_right_matches(".yml").parse().unwrap();
+        let number: i64 = match file_name.trim_right_matches(".yml").parse() {
+            Ok(n) => {
+                n
+            }
+            Err(_) => {
+                -1
+            }
+        };
         if max_file_number < number {
             max_file_number = number;
         }
+
     }
     (format!("{}.yml", max_file_number), format!("{}.yml", max_file_number + 1))
 }

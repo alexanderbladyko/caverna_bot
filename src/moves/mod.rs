@@ -8,7 +8,7 @@ pub trait MoveAction {
 
 pub struct UpdateResources {
     pub player: String,
-    pub update_hash: HashMap<String, i64>,
+    pub update_hash: HashMap<String, u32>,
 }
 
 impl MoveAction for UpdateResources {

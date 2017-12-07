@@ -7,10 +7,24 @@ order:
   - bot2
 players:
   - name: bot1
+    gnomes: 2
+    moved_gnomes: 0
+    child_gnomes: 0
+    rooms: []
+    room_slots_count: 12
+    fields: []
+    field_slots_count: 12
     resources:
       gold: 5
       food: 1
   - name: bot2
+    gnomes: 2
+    moved_gnomes: 0
+    child_gnomes: 0
+    rooms: []
+    room_slots_count: 12
+    fields: []
+    field_slots_count: 12
     resources:
       gold: 5
-      food: 3
+      food: 1

@@ -1,3 +1,4 @@
+#[derive(Serialize, Deserialize, Debug)]
 pub enum InsideElement {
     Room,
     Hall,
@@ -6,12 +7,11 @@ pub enum InsideElement {
     GemMine,
 }
 
-
+#[derive(Serialize, Deserialize, Debug)]
 pub enum OutsideElement {
     Meadow,
     Field,
-    MeadowField,
-    FenceField,
+    Fence,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

@@ -21,3 +21,7 @@ impl MoveAction for UpdateResources {
     }
 }
 
+pub struct Actions {
+    weight: i64,
+    actions: Vec<Box<MoveAction>>,
+}

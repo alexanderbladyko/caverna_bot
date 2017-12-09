@@ -5,6 +5,9 @@ first_move: bot1
 order:
   - bot1
   - bot2
+moves:
+  drift_mining:
+    coal: 0
 players:
   - name: bot1
     gnomes: 2

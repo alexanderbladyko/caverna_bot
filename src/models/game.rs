@@ -1,6 +1,11 @@
 use std::collections::{HashMap, HashSet};
+use std::fs;
+use std::path;
+use serde_yaml;
 
 use constants::{InsideElement, OutsideElement};
+use config::{Config};
+use moves::core::{MovesData};
 
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -92,4 +97,39 @@ pub struct Game {
     pub order: Vec<String>,
 
     pub players: Vec<Player>,
+    pub moves: MovesData,
+}
+
+impl Game {
+    pub fn get_last_game_file(config: &Config) -> (String, String) {
+        let paths = fs::read_dir(&config.folder).unwrap();
+        let mut max_file_number = 0_i64;
+        for path in paths {
+            let file_name = String::from(path.unwrap().file_name().clone().to_str().unwrap());
+            let number: i64 = match file_name.trim_right_matches(".yml").parse() {
+                   Ok(n) => {
+                    n
+                }
+                Err(_) => {
+                    -1
+                }
+            };
+            if max_file_number < number {
+                    max_file_number = number;
+            }
+        }
+        (format!("{}.yml", max_file_number), format!("{}.yml", max_file_number + 1))
+    }
+
+    pub fn read_from_yaml(config: &Config, name: String) -> Game {
+        let file = fs::File::open(path::Path::new(&config.folder).join(name))
+            .expect("Error reading game file");
+        serde_yaml::from_reader(file).unwrap()
+    }
+
+    pub fn write_to_yaml(&self, config: &Config, name: String) {
+        let file = fs::File::create(path::Path::new(&config.folder).join(name))
+            .expect("Error game file");
+        serde_yaml::to_writer(file, &self).unwrap()
+    }
 }

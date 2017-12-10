@@ -11,8 +11,6 @@ pub mod models;
 pub mod moves;
 pub mod test;
 
-use std::fs;
-use std::path;
 use clap::{App, SubCommand, Arg};
 
 use config::{Config};

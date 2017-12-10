@@ -6,7 +6,7 @@ use config::Config;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct DriftMining {
-    pub coal_incr: u16,
+    pub coal_incr: u32,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

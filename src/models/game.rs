@@ -44,10 +44,6 @@ impl Player {
         }
     }
 
-    pub fn add_room_slots(&mut self, amount: u32) {
-        self.room_slots_count += amount;
-    }
-
     pub fn spawn_new_gnome(&mut self) {
         self.child_gnomes += 1;
     }
@@ -101,6 +97,13 @@ pub struct Game {
 }
 
 impl Game {
+    pub fn get_player_mut(&mut self, player_name: &String) -> &mut Player {
+        self.players
+            .iter_mut()
+            .find(|p| p.name == *player_name)
+            .unwrap()
+    }
+
     pub fn get_last_game_file(config: &Config) -> (String, String) {
         let paths = fs::read_dir(&config.folder).unwrap();
         let mut max_file_number = 0_i64;

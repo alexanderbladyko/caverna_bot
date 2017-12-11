@@ -14,6 +14,8 @@ pub trait Move {
 pub struct MovesData {
     pub drift_mining: DriftMining,
     pub logging: Logging,
+    pub wood_gathering: WoodGathering,
+    pub excavation: Excavation,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -74,10 +76,72 @@ impl Move for Logging {
     }
 
     fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig) {
-        game.moves.logging += match game.moves.logging.wood {
+        game.moves.logging.wood += match game.moves.logging.wood {
             0 => moves_config.logging.wood_incr,
             _ => moves_config.logging.secondary_wood_incr,
         }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct WoodGathering {
+    wood: u32,
+}
+
+impl Move for WoodGathering {
+    fn get_actions(self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
+        let mut update_hash: HashMap<String, u32> = HashMap::new();
+        update_hash.insert(
+            constants::ResourceType::Wood.str_key(), game.moves.wood_gathering.woods
+        );
+
+        let mut actions: Vec<Box<MoveAction>> = Vec::new();
+        actions.push(Box::new(UpdateResources {
+            player: game.next,
+            update_hash,
+        }));
+
+        let mut result: Vec<Actions> = Vec::new();
+        result.push(Actions {
+            weight: 0,
+            actions,
+        });
+        result
+    }
+
+    fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig) {
+        game.moves.wood_gathering.wood += moves_config.wood_gathering.wood_incr;
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Excavation {
+    stone: u32,
+}
+
+impl Move for WoodGathering {
+    fn get_actions(self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
+        let mut update_hash: HashMap<String, u32> = HashMap::new();
+        update_hash.insert(
+            constants::ResourceType::Stone.str_key(), game.moves.excavation.stone
+        );
+
+        let mut actions: Vec<Box<MoveAction>> = Vec::new();
+        actions.push(Box::new(UpdateResources {
+            player: game.next,
+            update_hash,
+        }));
+
+        let mut result: Vec<Actions> = Vec::new();
+        result.push(Actions {
+            weight: 0,
+            actions,
+        });
+        result
+    }
+
+    fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig) {
+        game.moves.excavation.stone += moves_config.excavation.stone_incr;
     }
 }
 

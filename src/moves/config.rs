@@ -16,9 +16,21 @@ pub struct Logging {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct WoodGathering {
+    pub wood_incr: u32,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Excavation {
+    pub stone_incr: u32,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct MovesConfig {
     pub drift_mining: DriftMining,
     pub logging: Logging,
+    pub wood_gathering: WoodGathering,
+    pub excavation: Excavation,
 }
 
 impl MovesConfig {

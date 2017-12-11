@@ -10,8 +10,15 @@ pub struct DriftMining {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct Logging {
+    pub wood_incr: u32,
+    pub secondary_wood_incr: u32,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct MovesConfig {
     pub drift_mining: DriftMining,
+    pub logging: Logging,
 }
 
 impl MovesConfig {

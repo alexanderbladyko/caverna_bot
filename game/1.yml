@@ -7,7 +7,17 @@ order:
   - bot2
 moves:
   drift_mining:
-    coal: 0
+    stone: 0
+  logging:
+    wood: 0
+  wood_gathering:
+    wood: 0
+  excavation:
+    stone: 0
+  clearing:
+    wood: 0
+  starting_player:
+    food: 0
 players:
   - name: bot1
     gnomes: 2

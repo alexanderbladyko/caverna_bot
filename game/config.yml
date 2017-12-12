@@ -1,0 +1,22 @@
+drift_mining:
+  stone_incr: 1
+logging:
+  wood_incr: 3
+  secondary_wood_incr: 1
+wood_gathering:
+  wood_incr: 1
+excavation:
+  stone_incr: 1
+  secondary_stone_incr: 1
+supplies:
+  stone: 1
+  wood: 1
+  coal: 1
+  food: 1
+  gold: 2
+clearing:
+  wood_incr: 1
+starting_player:
+  food_incr: 1
+  coal: 2
+  gem: 0

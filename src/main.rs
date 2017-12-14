@@ -16,6 +16,7 @@ use clap::{App, SubCommand, Arg};
 use config::{Config};
 use models::game::{Game};
 use moves::config::{MovesConfig};
+use moves::core::{Moves};
 
 
 fn main() {
@@ -35,13 +36,22 @@ fn main() {
             .about("make decision"))
         .get_matches();
 
+    let moves = Moves {
+        game,
+        moves_config,
+        actions: Vec::new(),
+    };
+
     match matches.subcommand_name() {
         Some("show") => {
-            println!("{:?}", game);
-            println!("{:?}", moves_config);
+            println!("{:?}", moves.game);
+            println!("{:?}", moves.moves_config);
 
         },
-        Some("write") => game.write_to_yaml(&config, next_game_file),
+        Some("write") => moves.game.write_to_yaml(&config, next_game_file),
+        Some("decide") => {
+
+        },
         Some(_) => return,
         None => return,
     };

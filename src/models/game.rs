@@ -5,7 +5,7 @@ use serde_yaml;
 
 use constants::{InsideElement, OutsideElement};
 use config::{Config};
-use moves::core::{MovesData};
+use moves::data::{MovesData};
 
 
 #[derive(Serialize, Deserialize, Debug)]

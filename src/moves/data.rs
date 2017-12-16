@@ -4,6 +4,7 @@ pub struct MovesData {
     pub logging: LoggingData,
     pub wood_gathering: WoodGatheringData,
     pub excavation: ExcavationData,
+    pub clearing: ClearingData,
     pub starting_player: StartingPlayerData,
 }
 
@@ -25,6 +26,11 @@ pub struct WoodGatheringData {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ExcavationData {
     pub stone: u32,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ClearingData {
+    pub wood: u32,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

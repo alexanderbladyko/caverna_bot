@@ -18,6 +18,13 @@ moves:
     wood: 0
   starting_player:
     food: 0
+available_moves:
+  - drift_mining
+  - logging
+  - wood_gathering
+  - excavation
+  - clearing
+  - starting_player
 players:
   - name: bot1
     gnomes: 2
@@ -30,6 +37,7 @@ players:
     resources:
       gold: 5
       food: 1
+    moves: []
   - name: bot2
     gnomes: 2
     moved_gnomes: 0
@@ -41,3 +49,4 @@ players:
     resources:
       gold: 5
       food: 1
+    moves: []

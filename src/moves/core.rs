@@ -23,17 +23,18 @@ impl Moves {
 pub trait Move {
     fn get_actions(self, game: Game, moves_config: &MovesConfig) -> Vec<Actions>;
     fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig);
-    fn get_sub_command(self) -> App<'static, 'static>;
+    fn get_sub_command(&self) -> App<'static, 'static>;
 }
 
-pub fn get_from_string(string: &str) -> Box<Move> {
+pub fn get_from_string(string: &str) -> &Move {
     match string {
-        "drift_mining" => Box::from(DriftMining {}),
-        "logging" => Box::from(Logging {}),
-        "wood_gathering" => Box::from(WoodGathering {}),
-        "excavation" => Box::from(Excavation {}),
-        "supplies" => Box::from(Supplies {}),
-        "starting_player" => Box::from(StartingPlayer {}),
+        "drift_mining" => &DriftMining {},
+        "logging" => &Logging {},
+        "wood_gathering" => &WoodGathering {},
+        "excavation" => &Excavation {},
+        "supplies" => &Supplies {},
+        "clearing" => &Clearing {},
+        "starting_player" => &StartingPlayer {},
         &_ => panic!(format!("No move for {} found", string)),
     }
 }
@@ -65,7 +66,7 @@ impl Move for DriftMining {
         game.moves.drift_mining.stone += moves_config.drift_mining.stone_incr;
     }
 
-    fn get_sub_command(self) -> App<'static, 'static> {
+    fn get_sub_command(&self) -> App<'static, 'static> {
         SubCommand::with_name("drift_mining")
             .about("Drift Mining")
             .arg(Arg::with_name("hall_slot"))
@@ -103,7 +104,7 @@ impl Move for Logging {
         }
     }
 
-    fn get_sub_command(self) -> App<'static, 'static> {
+    fn get_sub_command(&self) -> App<'static, 'static> {
         SubCommand::with_name("logging")
             .about("Logging")
             .arg(Arg::with_name("extraction"))
@@ -138,7 +139,7 @@ impl Move for WoodGathering {
         game.moves.wood_gathering.wood += moves_config.wood_gathering.wood_incr;
     }
 
-    fn get_sub_command(self) -> App<'static, 'static> {
+    fn get_sub_command(&self) -> App<'static, 'static> {
         SubCommand::with_name("wood_gathering")
             .about("Wood Gathering")
     }
@@ -171,7 +172,7 @@ impl Move for Excavation {
         game.moves.excavation.stone += moves_config.excavation.stone_incr;
     }
 
-    fn get_sub_command(self) -> App<'static, 'static> {
+    fn get_sub_command(&self) -> App<'static, 'static> {
         SubCommand::with_name("excavation")
             .about("Excavation")
             .arg(Arg::with_name("first_slot"))
@@ -202,9 +203,33 @@ impl Move for Supplies {
     fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig) {
     }
 
-    fn get_sub_command(self) -> App<'static, 'static> {
+    fn get_sub_command(&self) -> App<'static, 'static> {
         SubCommand::with_name("supplies")
             .about("Supplies")
+    }
+}
+
+pub struct Clearing {}
+
+impl Move for Clearing {
+    fn get_actions(self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
+        let mut update_hash: HashMap<String, u32> = HashMap::new();
+        update_hash.insert(constants::ResourceType::Wood.str_key(), game.moves.clearing.wood);
+
+        let mut actions: Vec<Box<MoveAction>> = Vec::new();
+        actions.push(Box::new(UpdateResources { player: game.next, update_hash }));
+
+        let mut result: Vec<Actions> = Vec::new();
+        result.push(Actions { weight: 0, actions });
+        result
+    }
+
+    fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig) {
+    }
+
+    fn get_sub_command(&self) -> App<'static, 'static> {
+        SubCommand::with_name("wood_gathering")
+            .about("Wood Gathering")
     }
 }
 
@@ -229,7 +254,7 @@ impl Move for StartingPlayer {
         game.moves.starting_player.food += moves_config.starting_player.food_incr;
     }
 
-    fn get_sub_command(self) -> App<'static, 'static> {
+    fn get_sub_command(&self) -> App<'static, 'static> {
         SubCommand::with_name("wood_gathering")
             .about("Wood Gathering")
     }

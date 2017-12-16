@@ -5,6 +5,7 @@ use serde_yaml;
 
 use constants::{InsideElement, OutsideElement};
 use config::{Config};
+use moves::core::{get_from_string, Move};
 use moves::data::{MovesData};
 
 
@@ -35,6 +36,8 @@ pub struct Player {
     pub field_slots_count: u32,
 
     pub resources: HashMap<String, u32>,
+
+    pub moves: Vec<String>,
 }
 
 impl Player {
@@ -93,7 +96,9 @@ pub struct Game {
     pub order: Vec<String>,
 
     pub players: Vec<Player>,
+
     pub moves: MovesData,
+    pub available_moves: Vec<String>,
 }
 
 impl Game {
@@ -102,6 +107,21 @@ impl Game {
             .iter_mut()
             .find(|p| p.name == *player_name)
             .unwrap()
+    }
+
+    pub fn get_free_moves(&self) -> Vec<&Move> {
+        self.available_moves
+            .iter()
+            .filter(|m| {
+                for player in self.players.iter() {
+                    if player.moves.contains(m) {
+                        return false
+                    }
+                }
+                true
+            })
+            .map(|m| get_from_string(&m))
+            .collect()
     }
 
     pub fn get_last_game_file(config: &Config) -> (String, String) {

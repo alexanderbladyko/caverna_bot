@@ -16,7 +16,7 @@ use clap::{App, SubCommand, Arg};
 use config::{Config};
 use models::game::{Game};
 use moves::config::{MovesConfig};
-use moves::core::{Moves};
+use moves::core::{Moves, Move, get_from_string};
 
 
 fn main() {
@@ -28,13 +28,18 @@ fn main() {
 
     let moves_config = MovesConfig::read_from_yaml(&config, String::from("config.yml"));
 
-    let matches = App::new("Caverna bot")
-        .version("1.0")
-        .subcommand(SubCommand::with_name("show")
-            .about("display game state"))
-        .subcommand(SubCommand::with_name("decide")
-            .about("make decision"))
-        .get_matches();
+    let mut app = App::new("Caverna bot")
+        .version("1.0");
+    app = app.subcommand(SubCommand::with_name("show")
+        .about("display game state"));
+    app = app.subcommand(SubCommand::with_name("decide")
+        .about("make decision"));
+
+    for game_move in game.get_free_moves() {
+        app = app.subcommand(game_move.get_sub_command());
+    }
+
+    let matches = app.get_matches();
 
     let moves = Moves {
         game,

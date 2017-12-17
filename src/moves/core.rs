@@ -8,41 +8,37 @@ use moves::actions::{MoveAction, Actions, UpdateResources};
 use moves::config::{MovesConfig};
 
 
-pub struct Moves {
-    pub actions: Vec<Actions>,
-    pub game: Game,
-    pub moves_config: MovesConfig,
-}
-
-impl Moves {
-    pub fn collect_actions(self, moves: Vec<Box<Move>>) -> Vec<Actions> {
-        Vec::new()
-    }
+pub fn collect_actions(game: &Game, moves_config: &MovesConfig, moves: Vec<&Move>) -> Vec<Actions> {
+    let mut actions = Vec::new();
+    moves
+        .iter()
+        .for_each(|m| actions.extend(m.get_actions(game.clone(), moves_config)));
+    actions
 }
 
 pub trait Move {
-    fn get_actions(self, game: Game, moves_config: &MovesConfig) -> Vec<Actions>;
+    fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions>;
     fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig);
     fn get_sub_command(&self) -> App<'static, 'static>;
 }
 
-pub fn get_from_string(string: &str) -> &Move {
+pub fn get_from_string(string: &str) -> Result<&Move, String> {
     match string {
-        "drift_mining" => &DriftMining {},
-        "logging" => &Logging {},
-        "wood_gathering" => &WoodGathering {},
-        "excavation" => &Excavation {},
-        "supplies" => &Supplies {},
-        "clearing" => &Clearing {},
-        "starting_player" => &StartingPlayer {},
-        &_ => panic!(format!("No move for {} found", string)),
+        "drift_mining" => Ok(&DriftMining {}),
+        "logging" => Ok(&Logging {}),
+        "wood_gathering" => Ok(&WoodGathering {}),
+        "excavation" => Ok(&Excavation {}),
+        "supplies" => Ok(&Supplies {}),
+        "clearing" => Ok(&Clearing {}),
+        "starting_player" => Ok(&StartingPlayer {}),
+        &_ => Err(format!("No move for {} found", string))
     }
 }
 
 pub struct DriftMining {}
 
 impl Move for DriftMining {
-    fn get_actions(self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
+    fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
             constants::ResourceType::Stone.str_key(), moves_config.drift_mining.stone_incr
@@ -77,7 +73,7 @@ impl Move for DriftMining {
 pub struct Logging {}
 
 impl Move for Logging {
-    fn get_actions(self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
+    fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
             constants::ResourceType::Wood.str_key(), game.moves.logging.wood
@@ -115,7 +111,7 @@ impl Move for Logging {
 pub struct WoodGathering {}
 
 impl Move for WoodGathering {
-    fn get_actions(self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
+    fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
             constants::ResourceType::Wood.str_key(), game.moves.wood_gathering.wood
@@ -147,8 +143,17 @@ impl Move for WoodGathering {
 
 pub struct Excavation {}
 
+impl Excavation {
+    fn _is_valid_slot(s: String) -> Result<(), String> {
+        if let Err(..) = s.parse::<u32>() {
+            return Err(String::from("Not a valid number!"));
+        }
+        Ok(())
+    }
+}
+
 impl Move for Excavation {
-    fn get_actions(self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
+    fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
             constants::ResourceType::Stone.str_key(), game.moves.excavation.stone
@@ -175,16 +180,28 @@ impl Move for Excavation {
     fn get_sub_command(&self) -> App<'static, 'static> {
         SubCommand::with_name("excavation")
             .about("Excavation")
-            .arg(Arg::with_name("first_slot"))
-            .arg(Arg::with_name("second_slot"))
-            .arg(Arg::with_name("two_rooms"))
+            .arg(Arg::with_name("room_slot")
+                .required(true)
+                .help("Index of room slot")
+                .short("r")
+                .takes_value(true)
+                .validator(Excavation::_is_valid_slot))
+            .arg(Arg::with_name("second_slot")
+                .required(true)
+                .help("Index of hall/room slot. Hall by default")
+                .short("h")
+                .takes_value(true)
+                .validator(Excavation::_is_valid_slot))
+            .arg(Arg::with_name("two_rooms")
+                .short("t")
+                .help("Second slot will be room"))
     }
 }
 
 pub struct Supplies {}
 
 impl Move for Supplies {
-    fn get_actions(self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
+    fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(constants::ResourceType::Stone.str_key(), moves_config.supplies.stone);
         update_hash.insert(constants::ResourceType::Wood.str_key(), moves_config.supplies.wood);
@@ -212,7 +229,7 @@ impl Move for Supplies {
 pub struct Clearing {}
 
 impl Move for Clearing {
-    fn get_actions(self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
+    fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(constants::ResourceType::Wood.str_key(), game.moves.clearing.wood);
 
@@ -236,7 +253,7 @@ impl Move for Clearing {
 pub struct StartingPlayer {}
 
 impl Move for StartingPlayer {
-    fn get_actions(self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
+    fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(constants::ResourceType::Gem.str_key(), moves_config.starting_player.gem);
         update_hash.insert(constants::ResourceType::Coal.str_key(), moves_config.starting_player.coal);
@@ -255,7 +272,7 @@ impl Move for StartingPlayer {
     }
 
     fn get_sub_command(&self) -> App<'static, 'static> {
-        SubCommand::with_name("wood_gathering")
-            .about("Wood Gathering")
+        SubCommand::with_name("starting_player")
+            .about("Starting player")
     }
 }

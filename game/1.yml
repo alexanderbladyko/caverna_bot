@@ -23,6 +23,7 @@ available_moves:
   - logging
   - wood_gathering
   - excavation
+  - supplies
   - clearing
   - starting_player
 players:

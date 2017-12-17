@@ -16,7 +16,7 @@ use clap::{App, SubCommand, Arg};
 use config::{Config};
 use models::game::{Game};
 use moves::config::{MovesConfig};
-use moves::core::{Moves, Move, get_from_string};
+use moves::core::{Move, get_from_string, collect_actions};
 
 
 fn main() {
@@ -35,29 +35,38 @@ fn main() {
     app = app.subcommand(SubCommand::with_name("decide")
         .about("make decision"));
 
-    for game_move in game.get_free_moves() {
-        app = app.subcommand(game_move.get_sub_command());
-    }
+    let available_moves = game.get_free_moves();
+    let sub_commands: Vec<App<'static, 'static>> = available_moves
+        .iter()
+        .map(|m| m.get_sub_command())
+        .collect();
 
+    for cmd in sub_commands {
+        app = app.subcommand(cmd);
+    }
     let matches = app.get_matches();
 
-    let moves = Moves {
-        game,
-        moves_config,
-        actions: Vec::new(),
-    };
-
-    match matches.subcommand_name() {
-        Some("show") => {
-            println!("{:?}", moves.game);
-            println!("{:?}", moves.moves_config);
+    match matches.subcommand() {
+        ("show", Some(m)) => {
+            println!("{:?}", game);
+            println!("{:?}", moves_config);
 
         },
-        Some("write") => moves.game.write_to_yaml(&config, next_game_file),
-        Some("decide") => {
+        ("write", Some(m)) => game.write_to_yaml(&config, next_game_file),
+        ("decide", Some(m)) => {
 
         },
-        Some(_) => return,
-        None => return,
+        (name, Some(cmd)) => {
+            match get_from_string(name) {
+                Ok(mov) => {
+                    mov.get_actions(game.clone(), &moves_config)
+                        .iter()
+                        .for_each(|a| println!("{:?}", a.get_info()));
+                },
+                Err(_) => panic!(format!("Not found implementation for command: {}", name)),
+            }
+
+        },
+        _ => return,
     };
 }

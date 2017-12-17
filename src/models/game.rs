@@ -9,19 +9,19 @@ use moves::core::{get_from_string, Move};
 use moves::data::{MovesData};
 
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PlayerRoom {
     pub room_type: InsideElement,
     pub position: u32,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PlayerField {
     pub field_type: OutsideElement,
     pub position: u32,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Player {
     pub name: String,
 
@@ -87,7 +87,7 @@ impl Player {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Game {
     pub turn: u64,
 
@@ -120,7 +120,7 @@ impl Game {
                 }
                 true
             })
-            .map(|m| get_from_string(&m))
+            .map(|m| get_from_string(&m).unwrap())
             .collect()
     }
 

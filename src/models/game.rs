@@ -5,8 +5,8 @@ use serde_yaml;
 
 use constants::{InsideElement, OutsideElement};
 use config::{Config};
+use models::moves::{MovesData};
 use moves::core::{get_from_string, Move};
-use moves::data::{MovesData};
 
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -42,8 +42,8 @@ pub struct Player {
 
 impl Player {
     pub fn change_resources(&mut self, delta: HashMap<String, u32>) {
-        for key in delta.keys().into_iter() {
-            *self.resources.get_mut(key).unwrap() += *delta.get(key).unwrap();
+        for (key, value) in delta.into_iter() {
+            *self.resources.entry(key).or_insert(0) += value;
         }
     }
 
@@ -103,6 +103,7 @@ pub struct Game {
 
 impl Game {
     pub fn get_player_mut(&mut self, player_name: &String) -> &mut Player {
+        println!("{:?}", self.players);
         self.players
             .iter_mut()
             .find(|p| p.name == *player_name)

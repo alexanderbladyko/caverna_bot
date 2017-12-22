@@ -26,7 +26,7 @@ pub enum OutsideElement {
     Fence,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Hash)]
 pub enum ResourceType {
     Gem,
     Food,
@@ -42,6 +42,13 @@ pub enum ResourceType {
     Wheat,
     Pumpkin,
 }
+
+pub static TRIBAL_ANIMALS: &'static [ResourceType] = &[
+    ResourceType::Sheep,
+    ResourceType::Hippo,
+    ResourceType::Donkey,
+    ResourceType::Cow,
+];
 
 impl ResourceType {
     pub fn str_key(self) -> String {
@@ -62,3 +69,4 @@ impl ResourceType {
         })
     }
 }
+

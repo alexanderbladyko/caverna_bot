@@ -17,27 +17,36 @@ pub fn collect_actions(game: &Game, moves_config: &MovesConfig, moves: Vec<&Move
 }
 
 pub trait Move {
+    fn get_name(&self) -> &str;
     fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions>;
     fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig);
     fn get_sub_command(&self) -> App<'static, 'static>;
 }
 
 pub fn get_from_string(string: &str) -> Result<&Move, String> {
-    match string {
-        "drift_mining" => Ok(&DriftMining {}),
-        "logging" => Ok(&Logging {}),
-        "wood_gathering" => Ok(&WoodGathering {}),
-        "excavation" => Ok(&Excavation {}),
-        "supplies" => Ok(&Supplies {}),
-        "clearing" => Ok(&Clearing {}),
-        "starting_player" => Ok(&StartingPlayer {}),
-        &_ => Err(format!("No move for {} found", string))
+    let mut moves: HashMap<&str, &Move> = HashMap::new();
+
+    moves.insert(DriftMining {}.get_name(), &DriftMining {});
+    moves.insert(Logging {}.get_name(), &Logging {});
+    moves.insert(WoodGathering {}.get_name(), &WoodGathering {});
+    moves.insert(Excavation {}.get_name(), &Excavation {});
+    moves.insert(Supplies {}.get_name(), &Supplies {});
+    moves.insert(Clearing {}.get_name(), &Clearing {});
+    moves.insert(StartingPlayer {}.get_name(), &StartingPlayer {});
+
+    match moves.get(string) {
+        Some(x) => Ok(*x),
+        None => Err(format!("No move for {} found", string)),
     }
 }
 
 pub struct DriftMining {}
 
 impl Move for DriftMining {
+    fn get_name(&self) -> &str {
+        "drift_mining"
+    }
+
     fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
@@ -73,6 +82,10 @@ impl Move for DriftMining {
 pub struct Logging {}
 
 impl Move for Logging {
+    fn get_name(&self) -> &str {
+        "logging"
+    }
+
     fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
@@ -111,6 +124,10 @@ impl Move for Logging {
 pub struct WoodGathering {}
 
 impl Move for WoodGathering {
+    fn get_name(&self) -> &str {
+        "wood_gathering"
+    }
+
     fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
@@ -153,6 +170,10 @@ impl Excavation {
 }
 
 impl Move for Excavation {
+    fn get_name(&self) -> &str {
+        "excavation"
+    }
+
     fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
@@ -201,6 +222,10 @@ impl Move for Excavation {
 pub struct Supplies {}
 
 impl Move for Supplies {
+    fn get_name(&self) -> &str {
+        "supplies"
+    }
+
     fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(constants::ResourceType::Stone.str_key(), moves_config.supplies.stone);
@@ -229,6 +254,10 @@ impl Move for Supplies {
 pub struct Clearing {}
 
 impl Move for Clearing {
+    fn get_name(&self) -> &str {
+        "clearing"
+    }
+
     fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(constants::ResourceType::Wood.str_key(), game.moves.clearing.wood);
@@ -253,6 +282,10 @@ impl Move for Clearing {
 pub struct StartingPlayer {}
 
 impl Move for StartingPlayer {
+    fn get_name(&self) -> &str {
+        "starting_player"
+    }
+
     fn get_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(constants::ResourceType::Gem.str_key(), moves_config.starting_player.gem);

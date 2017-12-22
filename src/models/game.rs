@@ -16,6 +16,12 @@ pub struct PlayerRoom {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct PlayerDwelling {
+    pub dwelling_type: String,
+    pub position: u32,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PlayerField {
     pub field_type: OutsideElement,
     pub position: u32,
@@ -31,6 +37,8 @@ pub struct Player {
 
     pub rooms: Vec<PlayerRoom>,
     pub room_slots_count: u32,
+
+    pub dwellings: Vec<PlayerDwelling>,
 
     pub fields: Vec<PlayerField>,
     pub field_slots_count: u32,

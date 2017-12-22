@@ -5,10 +5,14 @@ extern crate serde;
 extern crate serde_yaml;
 extern crate clap;
 
+#[macro_use]
+pub mod common;
+
 pub mod config;
 pub mod constants;
 pub mod models;
 pub mod moves;
+pub mod rooms;
 pub mod test;
 
 use clap::{App, SubCommand, Arg};
@@ -26,7 +30,7 @@ fn main() {
 
     let mut game: Game = Game::read_from_yaml(&config, last_game_file);
 
-    let moves_config = MovesConfig::read_from_yaml(&config, String::from("config.yml"));
+    let moves_config = MovesConfig::read_from_yaml(&config, String::from("moves_config.yml"));
 
     let mut app = App::new("Caverna bot")
         .version("1.0");

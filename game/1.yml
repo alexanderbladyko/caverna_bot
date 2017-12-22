@@ -31,7 +31,10 @@ players:
     gnomes: 2
     moved_gnomes: 0
     child_gnomes: 0
-    rooms: []
+    rooms:
+      - room_type: Room
+        position: 0
+    dwellings: []
     room_slots_count: 12
     fields: []
     field_slots_count: 12
@@ -43,6 +46,7 @@ players:
     gnomes: 2
     moved_gnomes: 0
     child_gnomes: 0
+    dwellings: []
     rooms: []
     room_slots_count: 12
     fields: []

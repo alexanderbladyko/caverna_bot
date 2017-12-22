@@ -25,6 +25,8 @@ pub fn get_game_with_2_players() -> Game {
                 fields: vec![],
                 field_slots_count: 12,
 
+                dwellings: vec![],
+
                 resources: HashMap::new(),
 
                 moves: vec![],
@@ -38,6 +40,8 @@ pub fn get_game_with_2_players() -> Game {
 
                 rooms: vec![],
                 room_slots_count: 12,
+
+                dwellings: vec![],
 
                 fields: vec![],
                 field_slots_count: 12,

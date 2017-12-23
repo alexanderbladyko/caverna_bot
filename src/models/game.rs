@@ -5,19 +5,20 @@ use serde_yaml;
 
 use constants::{InsideElement, OutsideElement};
 use config::{Config};
+use rooms::core::{Room, get_from_string as get_room};
 use models::moves::{MovesData};
-use moves::core::{get_from_string, Move};
+use moves::core::{get_from_string as get_move, Move};
 
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PlayerRoom {
-    pub room_type: InsideElement,
+pub struct PlayerCavern {
+    pub cavern_type: InsideElement,
     pub position: u32,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PlayerDwelling {
-    pub dwelling_type: String,
+pub struct PlayerRoom {
+    pub room_type: String,
     pub position: u32,
 }
 
@@ -35,13 +36,11 @@ pub struct Player {
     pub child_gnomes: u32,
     pub moved_gnomes: u32,
 
-    pub rooms: Vec<PlayerRoom>,
-    pub room_slots_count: u32,
+    pub caverns: Vec<PlayerCavern>,
 
-    pub dwellings: Vec<PlayerDwelling>,
+    pub rooms: Vec<PlayerRoom>,
 
     pub fields: Vec<PlayerField>,
-    pub field_slots_count: u32,
 
     pub resources: HashMap<String, u32>,
 
@@ -66,18 +65,18 @@ impl Player {
         self.moved_gnomes += 1;
     }
 
-    pub fn add_rooms(&mut self, new_rooms: Vec<PlayerRoom>) {
+    pub fn add_rooms(&mut self, new_caverns: Vec<PlayerCavern>) {
         let mut slots: HashSet<u32> = HashSet::from(
-            self.rooms.iter().map(|r| r.position).collect()
+            self.caverns.iter().map(|r| r.position).collect()
         );
-        for room in new_rooms.iter() {
-            if slots.contains(&room.position) {
-                panic!(format!("Cannon add room {:?} to position {:?}", room.room_type, room.position));
+        for cavern in new_caverns.iter() {
+            if slots.contains(&cavern.position) {
+                panic!(format!("Cannon add room {:?} to position {:?}", cavern.cavern_type, cavern.position));
             }
-            slots.insert(room.position);
+            slots.insert(cavern.position);
         }
 
-        self.rooms.extend(new_rooms);
+        self.caverns.extend(new_caverns);
     }
 
     pub fn add_fields(&mut self, new_fields: Vec<PlayerField>) {
@@ -92,6 +91,13 @@ impl Player {
         }
 
         self.fields.extend(new_fields);
+    }
+
+    pub fn get_rooms(&self) -> Vec<&Room> {
+        self.rooms
+            .iter()
+            .map(|d| get_room(&d.room_type).unwrap())
+            .collect()
     }
 }
 
@@ -129,7 +135,7 @@ impl Game {
                 }
                 true
             })
-            .map(|m| get_from_string(&m).unwrap())
+            .map(|m| get_move(&m).unwrap())
             .collect()
     }
 

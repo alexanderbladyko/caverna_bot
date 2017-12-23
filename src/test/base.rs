@@ -19,13 +19,11 @@ pub fn get_game_with_2_players() -> Game {
                 child_gnomes: 0,
                 moved_gnomes: 0,
 
-                rooms: vec![],
-                room_slots_count: 12,
+                caverns: vec![],
 
                 fields: vec![],
-                field_slots_count: 12,
 
-                dwellings: vec![],
+                rooms: vec![],
 
                 resources: HashMap::new(),
 
@@ -38,13 +36,11 @@ pub fn get_game_with_2_players() -> Game {
                 child_gnomes: 0,
                 moved_gnomes: 0,
 
-                rooms: vec![],
-                room_slots_count: 12,
+                caverns: vec![],
 
-                dwellings: vec![],
+                rooms: vec![],
 
                 fields: vec![],
-                field_slots_count: 12,
 
                 resources: HashMap::new(),
 

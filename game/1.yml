@@ -31,13 +31,15 @@ players:
     gnomes: 2
     moved_gnomes: 0
     child_gnomes: 0
-    rooms:
-      - room_type: Room
+    caverns:
+      - cavern_type: Room
         position: 0
-    dwellings: []
-    room_slots_count: 12
+      - cavern_type: Room
+        position: 4
+    rooms:
+      - room_type: entry_level_dwelling
+        position: 0
     fields: []
-    field_slots_count: 12
     resources:
       gold: 5
       food: 1
@@ -46,11 +48,13 @@ players:
     gnomes: 2
     moved_gnomes: 0
     child_gnomes: 0
-    dwellings: []
+    caverns:
+      - cavern_type: Room
+        position: 0
+      - cavern_type: Room
+        position: 4
     rooms: []
-    room_slots_count: 12
     fields: []
-    field_slots_count: 12
     resources:
       gold: 5
       food: 1

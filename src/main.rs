@@ -13,6 +13,7 @@ pub mod constants;
 pub mod models;
 pub mod moves;
 pub mod rooms;
+pub mod score;
 pub mod test;
 
 use clap::{App, SubCommand, Arg};

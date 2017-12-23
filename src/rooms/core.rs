@@ -8,7 +8,6 @@ pub struct ResourceSlots {
     size: u32,
 }
 
-
 pub trait Room {
     fn get_name(&self) -> &str;
 
@@ -49,8 +48,6 @@ pub fn get_from_string(string: &str) -> Result<&Room, String> {
         None => Err(format!("No room for {} found", string)),
     }
 }
-
-
 
 pub struct EntryLevelDwelling {}
 

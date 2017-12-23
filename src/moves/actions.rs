@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use models::game::{Game, PlayerRoom, PlayerField};
+use models::game::{Game, PlayerCavern, PlayerField};
 
 pub trait MoveAction {
     fn perform(self, game: &mut Game);
@@ -39,7 +39,7 @@ impl MoveAction for UpdateResources {
 
 pub struct BuildRooms {
     pub player: String,
-    pub rooms: Vec<PlayerRoom>,
+    pub rooms: Vec<PlayerCavern>,
 }
 
 impl MoveAction for BuildRooms {

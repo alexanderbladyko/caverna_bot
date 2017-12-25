@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use models::game::{Game, PlayerCavern, PlayerField};
 
 pub trait MoveAction {
-    fn perform(self, game: &mut Game);
+    fn perform(&self, game: &mut Game);
 
     fn get_info(&self) -> String;
 }
@@ -20,6 +20,12 @@ impl Actions {
             .map(|a| a.get_info())
             .collect()
     }
+
+    pub fn perform(&self, game: &mut Game) {
+        self.actions
+            .iter()
+            .for_each(|a| a.perform(game))
+    }
 }
 
 pub struct UpdateResources {
@@ -28,8 +34,10 @@ pub struct UpdateResources {
 }
 
 impl MoveAction for UpdateResources {
-    fn perform(self, game: &mut Game) {
-        game.get_player_mut(&self.player).change_resources(self.update_hash);
+    fn perform(&self, game: &mut Game) {
+        game
+            .get_player_mut(&self.player)
+            .change_resources(self.update_hash.clone());
     }
 
     fn get_info(&self) -> String {
@@ -43,8 +51,10 @@ pub struct BuildRooms {
 }
 
 impl MoveAction for BuildRooms {
-    fn perform(self, game: &mut Game) {
-        game.get_player_mut(&self.player).add_rooms(self.rooms);
+    fn perform(&self, game: &mut Game) {
+        game
+            .get_player_mut(&self.player)
+            .add_rooms(self.rooms.clone());
     }
 
     fn get_info(&self) -> String {
@@ -58,8 +68,8 @@ pub struct BuildFields {
 }
 
 impl MoveAction for BuildFields {
-    fn perform(self, game: &mut Game) {
-        game.get_player_mut(&self.player).add_fields(self.fields);
+    fn perform(&self, game: &mut Game) {
+        game.get_player_mut(&self.player).add_fields(self.fields.clone());
     }
 
     fn get_info(&self) -> String {
@@ -72,11 +82,23 @@ pub struct SpawnGnome {
 }
 
 impl MoveAction for SpawnGnome {
-    fn perform(self, game: &mut Game) {
+    fn perform(&self, game: &mut Game) {
         game.get_player_mut(&self.player).spawn_new_gnome();
     }
 
     fn get_info(&self) -> String {
         format!("Spawning gnome")
+    }
+}
+
+pub struct IncrTurn {}
+
+impl MoveAction for IncrTurn {
+    fn perform(&self, game: &mut Game) {
+        game.turn += 1;
+    }
+
+    fn get_info(&self) -> String {
+        format!("Game turn +1")
     }
 }

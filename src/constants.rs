@@ -1,3 +1,10 @@
+#[derive(Serialize, Deserialize, Debug, Clone, Hash, PartialEq)]
+pub enum GameStatus {
+    PlayerMove,
+    NextTurnPending,
+    GnomeFeeding,
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum InsideElement {
     Room,

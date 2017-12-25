@@ -1,5 +1,6 @@
 ---
 turn: 1
+status: PlayerMove
 next: bot1
 first_move: bot1
 order:

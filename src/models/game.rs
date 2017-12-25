@@ -3,7 +3,7 @@ use std::fs;
 use std::path;
 use serde_yaml;
 
-use constants::{InsideElement, OutsideElement};
+use constants::{InsideElement, OutsideElement, GameStatus};
 use config::{Config};
 use rooms::core::{Room, get_from_string as get_room};
 use models::moves::{MovesData};
@@ -105,6 +105,8 @@ impl Player {
 pub struct Game {
     pub turn: u64,
 
+    pub status: GameStatus,
+
     pub next: String,
     pub first_move: String,
     pub order: Vec<String>,
@@ -117,10 +119,17 @@ pub struct Game {
 
 impl Game {
     pub fn get_player_mut(&mut self, player_name: &String) -> &mut Player {
-        println!("{:?}", self.players);
         self.players
             .iter_mut()
             .find(|p| p.name == *player_name)
+            .unwrap()
+    }
+
+    pub fn get_current_player_mut(&mut self) -> &mut Player {
+        let current_player_name = &self.next;
+        self.players
+            .iter_mut()
+            .find(|p| p.name == *current_player_name)
             .unwrap()
     }
 

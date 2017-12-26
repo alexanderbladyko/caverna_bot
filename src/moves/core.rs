@@ -21,7 +21,7 @@ pub trait Move {
     fn get_sub_command(&self) -> App<'static, 'static>;
     fn get_all_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions>;
     fn get_actions(&self, game: Game, moves_config: &MovesConfig, args: &ArgMatches) -> Actions;
-    fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig);
+    fn on_next_turn(&self, game: &mut Game, moves_config: &MovesConfig);
 }
 
 pub fn get_from_string(string: &str) -> Result<&Move, String> {
@@ -92,7 +92,7 @@ impl Move for DriftMining {
         }
     }
 
-    fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig) {
+    fn on_next_turn(&self, game: &mut Game, moves_config: &MovesConfig) {
         game.moves.drift_mining.stone += moves_config.drift_mining.stone_incr;
     }
 }
@@ -147,7 +147,7 @@ impl Move for Logging {
         }
     }
 
-    fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig) {
+    fn on_next_turn(&self, game: &mut Game, moves_config: &MovesConfig) {
         game.moves.logging.wood += match game.moves.logging.wood {
             0 => moves_config.logging.wood_incr,
             _ => moves_config.logging.secondary_wood_incr,
@@ -204,7 +204,7 @@ impl Move for WoodGathering {
         }
     }
 
-    fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig) {
+    fn on_next_turn(&self, game: &mut Game, moves_config: &MovesConfig) {
         game.moves.wood_gathering.wood += moves_config.wood_gathering.wood_incr;
     }
 }
@@ -282,7 +282,7 @@ impl Move for Excavation {
         }
     }
 
-    fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig) {
+    fn on_next_turn(&self, game: &mut Game, moves_config: &MovesConfig) {
         game.moves.excavation.stone += moves_config.excavation.stone_incr;
     }
 }
@@ -334,7 +334,7 @@ impl Move for Supplies {
         }
     }
 
-    fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig) {
+    fn on_next_turn(&self, game: &mut Game, moves_config: &MovesConfig) {
     }
 }
 
@@ -377,7 +377,7 @@ impl Move for Clearing {
         }
     }
 
-    fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig) {
+    fn on_next_turn(&self, game: &mut Game, moves_config: &MovesConfig) {
     }
 }
 
@@ -424,7 +424,7 @@ impl Move for StartingPlayer {
         }
     }
 
-    fn on_next_turn(self, game: &mut Game, moves_config: &MovesConfig) {
+    fn on_next_turn(&self, game: &mut Game, moves_config: &MovesConfig) {
         game.moves.starting_player.food += moves_config.starting_player.food_incr;
     }
 }

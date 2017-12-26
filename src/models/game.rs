@@ -148,6 +148,13 @@ impl Game {
             .collect()
     }
 
+    pub fn get_all_moves(&self) -> Vec<&Move> {
+        self.available_moves
+            .iter()
+            .map(|m| get_move(&m).unwrap())
+            .collect()
+    }
+
     pub fn get_last_game_file(config: &Config) -> (String, String) {
         let paths = fs::read_dir(&config.folder).unwrap();
         let mut max_file_number = 0_i64;

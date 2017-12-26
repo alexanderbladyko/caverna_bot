@@ -39,8 +39,16 @@ fn main() {
         .about("display game state"));
     app = app.subcommand(SubCommand::with_name("decide")
         .about("make decision"));
-    app = app.subcommand(SubCommand::with_name("next_turn")
-        .about("calculates next turn"));
+    app = app.subcommand(SubCommand::with_name("next_round")
+        .about("calculates next turn")
+        .arg(Arg::with_name("dry_run")
+            .help("Dry run")
+            .long("dry_run")
+            .short("d")
+        ).arg(Arg::with_name("new_move")
+            .help("New move")
+            .long("new_move")
+            .short("n")));
 
     {
         let available_moves = game.get_free_moves();
@@ -67,13 +75,11 @@ fn main() {
         ("decide", Some(m)) => {
             _decide(game, &moves_config);
         },
+        ("next_round", Some(cmd)) => {
+            _next_round_game(cmd, game, &config, &moves_config, next_game_file);
+        },
         (name, Some(cmd)) => {
             _perform_move(&name, cmd, game, &config, &moves_config, next_game_file);
-        },
-        ("next_turn", Some(cmd)) => {
-            if game.status != constants::GameStatus::NextTurnPending {
-                panic!("Status is not 'GnomeFeeding'");
-            }
         },
         _ => return,
     };
@@ -81,7 +87,7 @@ fn main() {
 
 fn _decide(game: &mut Game, moves_config: &MovesConfig) {
     if game.status != constants::GameStatus::PlayerMove {
-        panic!("Status is not 'PlayerMove'");
+        panic!("Status is not '{:?}'", constants::GameStatus::PlayerMove);
     }
     game.available_moves
         .iter()
@@ -105,12 +111,11 @@ fn _decide(game: &mut Game, moves_config: &MovesConfig) {
         });
 }
 
-fn _perform_move(
-    name: &str, cmd: &ArgMatches, game: &mut Game, config: &Config,
-    moves_config: &MovesConfig, output_file: String
+fn _perform_move(name: &str, cmd: &ArgMatches, game: &mut Game, config: &Config,
+                 moves_config: &MovesConfig, output_file: String
 ) {
     if game.status != constants::GameStatus::PlayerMove {
-        panic!("Status is not 'PlayerMove'");
+        panic!("Status is not '{:?}'", constants::GameStatus::PlayerMove);
     }
     match get_from_string(name) {
         Ok(mov) => {
@@ -126,5 +131,34 @@ fn _perform_move(
             }
         },
         Err(_) => panic!(format!("Not found implementation for command: {}", name)),
+    }
+}
+
+fn _next_round_game(cmd: &ArgMatches, game: &mut Game, config: &Config,
+                    moves_config: &MovesConfig, output_file: String) {
+    if game.status != constants::GameStatus::NextTurnPending {
+        panic!("Status is not '{:?}'", constants::GameStatus::NextTurnPending);
+    }
+
+    game.status = constants::GameStatus::PlayerMove;
+    game.next = game.order.first().unwrap().to_string();
+
+    match cmd.value_of("new_move") {
+        Some(new_move) => match get_from_string(new_move) {
+            Ok(mov) => {
+                for mov in game.clone().get_all_moves() {
+                    mov.on_next_turn(game, &moves_config);
+                }
+
+                if cmd.occurrences_of("dry_run") == 0 {
+                    println!("Applying changes");
+                    game.write_to_yaml(&config, output_file);
+                } else {
+                    println!("Dry run");
+                }
+            }
+            Err(_) => panic!(format!("Not found implementation for command: {}", new_move)),
+        },
+        _ => {},
     }
 }

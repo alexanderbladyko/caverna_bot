@@ -91,14 +91,51 @@ impl MoveAction for SpawnGnome {
     }
 }
 
-pub struct IncrTurn {}
+pub struct IncreaseTurn {}
 
-impl MoveAction for IncrTurn {
+impl MoveAction for IncreaseTurn {
     fn perform(&self, game: &mut Game) {
         game.turn += 1;
     }
 
     fn get_info(&self) -> String {
         format!("Game turn +1")
+    }
+}
+
+pub struct NextUser {
+    pub player: String,
+}
+
+impl MoveAction for NextUser {
+    fn perform(&self, game: &mut Game) {
+        game.next = self.player.clone();
+    }
+
+    fn get_info(&self) -> String {
+        format!("Next user {:?}", self.player)
+    }
+}
+
+pub struct FirstPlayer {
+    pub player: String,
+}
+
+impl MoveAction for FirstPlayer {
+    fn perform(&self, game: &mut Game) {
+        let old_order = game.order.clone();
+
+        let position = old_order.iter().position(|p| *p == self.player).unwrap();
+
+        let before = old_order.iter().take(position).map(|p| *p).collect::<Vec<String>>();
+        let mut after = old_order.into_iter().skip(position).collect::<Vec<_>>();
+
+        after.extend(before);
+
+        game.order = after;
+    }
+
+    fn get_info(&self) -> String {
+        format!("First player is {:?}", self.player)
     }
 }

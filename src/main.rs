@@ -18,9 +18,11 @@ pub mod test;
 
 use clap::{App, SubCommand, Arg, ArgMatches};
 
+use constants::{GameStatus};
 use config::{Config};
 use models::game::{Game};
 use moves::config::{MovesConfig};
+use moves::actions::{NextUser, ChangeStatus, ReserveGnome, BlockMove};
 use moves::core::{Move, get_from_string, collect_actions};
 
 
@@ -119,9 +121,30 @@ fn _perform_move(name: &str, cmd: &ArgMatches, game: &mut Game, config: &Config,
     }
     match get_from_string(name) {
         Ok(mov) => {
-            let actions = mov.get_actions(game.clone(), &moves_config, &cmd);
-            println!("{:?}", actions.get_info());
+            let mut actions = mov.get_actions(game.clone(), &moves_config, &cmd);
 
+            actions.actions.push(Box::from(ReserveGnome {
+                player: game.next.clone(),
+            }));
+
+            actions.actions.push(Box::from(BlockMove {
+                player_move: String::from(name),
+            }));
+
+            if game.is_last_move() {
+                actions.actions.push(Box::from(ChangeStatus {
+                    status: GameStatus::NextTurnPending
+                }));
+            } else {
+                actions.actions.push(Box::from(NextUser {
+                    player: game.get_next_user(),
+                }));
+            }
+
+            println!("Upcoming actions:");
+            actions.get_info().iter().for_each(|p| println!("{}", p));
+
+            println!("----------");
             if cmd.occurrences_of("dry_run") == 0 {
                 println!("Applying changes");
                 actions.perform(game);

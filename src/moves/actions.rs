@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use constants::GameStatus;
 use models::game::{Game, PlayerCavern, PlayerField};
 
 pub trait MoveAction {
@@ -41,7 +42,7 @@ impl MoveAction for UpdateResources {
     }
 
     fn get_info(&self) -> String {
-        format!("Updating resources {:?}", self.update_hash)
+        format!("Updating resources {:?} for {:?}", self.update_hash, self.player)
     }
 }
 
@@ -58,7 +59,7 @@ impl MoveAction for BuildRooms {
     }
 
     fn get_info(&self) -> String {
-        format!("Building rooms {:?}", self.rooms)
+        format!("Building rooms {:?} for {:?}", self.rooms, self.player)
     }
 }
 
@@ -73,7 +74,7 @@ impl MoveAction for BuildFields {
     }
 
     fn get_info(&self) -> String {
-        format!("Building fields {:?}", self.fields)
+        format!("Building fields {:?} for {:?}", self.fields, self.player)
     }
 }
 
@@ -87,7 +88,7 @@ impl MoveAction for SpawnGnome {
     }
 
     fn get_info(&self) -> String {
-        format!("Spawning gnome")
+        format!("Spawning new gnome for {:?}", self.player)
     }
 }
 
@@ -113,7 +114,7 @@ impl MoveAction for NextUser {
     }
 
     fn get_info(&self) -> String {
-        format!("Next user {:?}", self.player)
+        format!("Next user is {:?}", self.player)
     }
 }
 
@@ -125,10 +126,13 @@ impl MoveAction for FirstPlayer {
     fn perform(&self, game: &mut Game) {
         let old_order = game.order.clone();
 
-        let position = old_order.iter().position(|p| *p == self.player).unwrap();
+        let position = old_order
+            .iter()
+            .position(|p| *p == self.player)
+            .unwrap();
 
-        let before = old_order.iter().take(position).map(|p| *p).collect::<Vec<String>>();
-        let mut after = old_order.into_iter().skip(position).collect::<Vec<_>>();
+        let before = old_order.into_iter().take(position).collect::<Vec<_>>();
+        let mut after = game.order.clone().into_iter().skip(position).collect::<Vec<_>>();
 
         after.extend(before);
 
@@ -137,5 +141,51 @@ impl MoveAction for FirstPlayer {
 
     fn get_info(&self) -> String {
         format!("First player is {:?}", self.player)
+    }
+}
+
+pub struct ReserveGnome {
+    pub player: String,
+}
+
+impl MoveAction for ReserveGnome {
+    fn perform(&self, game: &mut Game) {
+        game.get_player_mut(&self.player).moved_gnomes += 1;
+    }
+
+    fn get_info(&self) -> String {
+        format!("Reserve gnome for {:?}", self.player)
+    }
+}
+
+pub struct BlockMove {
+    pub player_move: String,
+}
+
+impl MoveAction for BlockMove {
+    fn perform(&self, game: &mut Game) {
+        let index = game.available_moves
+            .iter()
+            .position(|x| *x == self.player_move)
+            .unwrap();
+        game.available_moves.remove(index);
+    }
+
+    fn get_info(&self) -> String {
+        format!("Blocking move {:?}", self.player_move)
+    }
+}
+
+pub struct ChangeStatus {
+    pub status: GameStatus,
+}
+
+impl MoveAction for ChangeStatus {
+    fn perform(&self, game: &mut Game) {
+        game.status = self.status.clone();
+    }
+
+    fn get_info(&self) -> String {
+        format!("Changing game status {:?}", self.status)
     }
 }

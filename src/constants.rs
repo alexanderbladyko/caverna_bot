@@ -3,6 +3,7 @@ pub enum GameStatus {
     PlayerMove,
     NextTurnPending,
     GnomeFeeding,
+    TribalBreeding,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

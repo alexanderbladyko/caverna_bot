@@ -99,6 +99,10 @@ impl Player {
             .map(|d| get_room(&d.room_type).unwrap())
             .collect()
     }
+
+    pub fn free_gnomes(&self) -> u32 {
+        self.gnomes - self.moved_gnomes
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -118,6 +122,13 @@ pub struct Game {
 }
 
 impl Game {
+    pub fn get_player(&self, player_name: &String) -> &Player {
+        self.players
+            .iter()
+            .find(|p| p.name == *player_name)
+            .unwrap()
+    }
+
     pub fn get_player_mut(&mut self, player_name: &String) -> &mut Player {
         self.players
             .iter_mut()
@@ -153,6 +164,28 @@ impl Game {
             .iter()
             .map(|m| get_move(&m).unwrap())
             .collect()
+    }
+
+    pub fn is_last_move(&self) -> bool {
+        let gnomes: u32 = self.players.iter().map(|p| p.free_gnomes()).sum();
+        gnomes <= 1
+    }
+
+    pub fn get_next_user(&self) -> String {
+        let next_users = self.order.clone();
+        let position = self.order.clone()
+            .iter()
+            .position(|p| *p == self.next)
+            .unwrap() + 1;
+        let before = self.order.clone().into_iter().take(position).collect::<Vec<_>>();
+        let mut after = self.order.clone().into_iter().skip(position).collect::<Vec<_>>();
+        after.extend(before);
+        after
+            .into_iter()
+            .map(|n| self.get_player(&n).clone())
+            .find(|p| p.free_gnomes() > 0)
+            .unwrap()
+            .name
     }
 
     pub fn get_last_game_file(config: &Config) -> (String, String) {

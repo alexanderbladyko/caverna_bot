@@ -48,4 +48,83 @@ mod test {
             assert_eq!(player.child_gnomes, 1);
         }
     }
+
+    #[cfg(test)]
+    mod test_first_player {
+        use std::collections::HashMap;
+
+        use test::base;
+
+        use constants;
+        use moves::actions::{MoveAction, FirstPlayer};
+
+        #[test]
+        fn test_perform() {
+            let mut game = base::get_game_with_2_players();
+
+            game.order = vec![
+                String::from("p1"),
+                String::from("p2"),
+                String::from("p3"),
+                String::from("p4"),
+            ];
+
+            let action = FirstPlayer {
+                player: String::from("p3"),
+            };
+            action.perform(&mut game);
+
+            assert_eq!(game.order, vec![
+                String::from("p3"),
+                String::from("p4"),
+                String::from("p1"),
+                String::from("p2"),
+            ]);
+        }
+    }
+
+    #[cfg(test)]
+    mod test_reserve_gnome {
+        use std::collections::HashMap;
+
+        use test::base;
+
+        use constants;
+        use moves::actions::{MoveAction, ReserveGnome};
+
+        #[test]
+        fn test_perform() {
+            let mut game = base::get_game_with_2_players();
+
+            let action = ReserveGnome {
+                player: String::from("p1"),
+            };
+            action.perform(&mut game);
+
+            let player = game.players.iter().find(|p| p.name == String::from("p1")).unwrap();
+            assert_eq!(player.moved_gnomes, 1);
+        }
+    }
+
+    #[cfg(test)]
+    mod test_change_status {
+        use std::collections::HashMap;
+
+        use test::base;
+
+        use constants;
+        use moves::actions::{MoveAction, ChangeStatus};
+
+        #[test]
+        fn test_perform() {
+            let mut game = base::get_game_with_2_players();
+
+            let action = ChangeStatus {
+                status: constants::GameStatus::NextTurnPending,
+            };
+            action.perform(&mut game);
+
+            assert_eq!(game.status, constants::GameStatus::NextTurnPending);
+        }
+    }
 }

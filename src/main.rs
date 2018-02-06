@@ -10,6 +10,7 @@ pub mod common;
 
 pub mod config;
 pub mod constants;
+pub mod balance;
 pub mod models;
 pub mod moves;
 pub mod rooms;

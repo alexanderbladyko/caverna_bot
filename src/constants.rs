@@ -51,13 +51,6 @@ pub enum ResourceType {
     Pumpkin,
 }
 
-pub static TRIBAL_ANIMALS: &'static [ResourceType] = &[
-    ResourceType::Sheep,
-    ResourceType::Hippo,
-    ResourceType::Donkey,
-    ResourceType::Cow,
-];
-
 impl ResourceType {
     pub fn str_key(self) -> String {
         String::from(match self {
@@ -78,3 +71,25 @@ impl ResourceType {
     }
 }
 
+pub static TRIBAL_ANIMALS: &'static [ResourceType] = &[
+    ResourceType::Sheep,
+    ResourceType::Hippo,
+    ResourceType::Donkey,
+    ResourceType::Cow,
+];
+
+pub static ALL_RESOURCES: &'static [ResourceType] = &[
+    ResourceType::Gem,
+    ResourceType::Food,
+    ResourceType::Gold,
+    ResourceType::Stone,
+    ResourceType::Wood,
+    ResourceType::Coal,
+    ResourceType::Sheep,
+    ResourceType::Hippo,
+    ResourceType::Dog,
+    ResourceType::Donkey,
+    ResourceType::Cow,
+    ResourceType::Wheat,
+    ResourceType::Pumpkin,
+];

@@ -1,0 +1,26 @@
+---
+moves:
+  drift_mining:
+    gnome_count: 0.1
+    free_gnome_slots_count: 0.1
+    resource__gold: 0.1
+    resource__wheat: 0.1
+    turn: 0.1
+    max_slots_for__gold: 0.1
+    clear_slots_for__gold: 0.1
+    free_slots_for__room: 0.1
+    free_slots_for__field: 0.1
+    free_slots_for__caverns: 0.1
+    free_slots_for__mines: 0.1
+    neighbours_with_fields: 0.1
+    rooms_count__green: 0.1
+    rooms_count__yellow: 0.1
+    rooms_count__ginger: 0.1
+    gnome_warrior_count: 0.1
+    gnome_peacefull_count: 0.1
+    max_warrior_level: 0.1
+    fines_amount: 0.1
+    free_rooms_count: 0.1
+    free_halls_count: 0.1
+    free_mine_halls_count: 0.1
+    free_fields: 0.1

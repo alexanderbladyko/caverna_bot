@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use constants;
+use rooms::{constants as RoomConstants};
 
 
 pub struct ResourceSlots {
@@ -53,7 +54,7 @@ pub struct EntryLevelDwelling {}
 
 impl Room for EntryLevelDwelling {
     fn get_name(&self) -> &str {
-        "entry_level_dwelling"
+        RoomConstants::ENTRY_LEVEL_DWELLING
     }
 
     fn get_gnome_slots(&self) -> u32 {
@@ -79,7 +80,7 @@ pub struct Dwelling {}
 
 impl Room for Dwelling {
     fn get_name(&self) -> &str {
-        "dwelling"
+        RoomConstants::DWELLING
     }
 
     fn get_gnome_slots(&self) -> u32 {
@@ -102,7 +103,7 @@ pub struct SimpleDwelling1 {}
 
 impl Room for SimpleDwelling1 {
     fn get_name(&self) -> &str {
-        "simple_dwelling1"
+        RoomConstants::SIMPLE_DWELLING1
     }
 
     fn get_gnome_slots(&self) -> u32 {
@@ -121,7 +122,7 @@ pub struct SimpleDwelling2 {}
 
 impl Room for SimpleDwelling2 {
     fn get_name(&self) -> &str {
-        "simple_dwelling2"
+        RoomConstants::SIMPLE_DWELLING2
     }
 
     fn get_gnome_slots(&self) -> u32 {
@@ -140,7 +141,7 @@ pub struct MixedDwelling {}
 
 impl Room for MixedDwelling {
     fn get_name(&self) -> &str {
-        "mixed_dwelling"
+        RoomConstants::MIXED_DWELLING
     }
 
     fn get_gnome_slots(&self) -> u32 {
@@ -166,7 +167,7 @@ pub struct CoupleDwelling {}
 
 impl Room for CoupleDwelling {
     fn get_name(&self) -> &str {
-        "couple_dwelling"
+        RoomConstants::COUPLE_DWELLING
     }
 
     fn get_gnome_slots(&self) -> u32 {
@@ -185,7 +186,7 @@ pub struct AdditionalDwelling {}
 
 impl Room for AdditionalDwelling {
     fn get_name(&self) -> &str {
-        "additional_dwelling"
+        RoomConstants::ADDITIONAL_DWELLING
     }
 
     fn get_gnome_slots(&self) -> u32 {

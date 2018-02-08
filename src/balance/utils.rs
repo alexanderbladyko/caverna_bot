@@ -2,6 +2,7 @@ use std::collections::{HashMap};
 
 use constants::{ResourceType, ALL_RESOURCES};
 use balance::{constants};
+use rooms::{constants as RoomConstants};
 
 
 pub fn generate_balance_item() -> HashMap<String, f32> {
@@ -33,4 +34,12 @@ pub fn generate_balance_item() -> HashMap<String, f32> {
         })
     }
     map
+}
+
+pub fn generate_room_with_items() -> HashMap<String, HashMap<String, f32>> {
+    let mut hash: HashMap<String, HashMap<String, f32>> = HashMap::new();
+    RoomConstants::ALL_ROOMS.iter().for_each(|r| {
+        hash.insert(String::from(*r), generate_balance_item());
+    });
+    hash
 }

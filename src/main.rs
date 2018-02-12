@@ -21,6 +21,7 @@ use clap::{App, SubCommand, Arg, ArgMatches};
 
 use constants::{GameStatus};
 use config::{Config};
+use balance::utils::generate_balance_config;
 use models::game::{Game};
 use moves::config::{MovesConfig};
 use moves::actions::{NextUser, ChangeStatus, ReserveGnome, BlockMove};
@@ -52,6 +53,8 @@ fn main() {
             .help("New move")
             .long("new_move")
             .short("n")));
+    app = app.subcommand(SubCommand::with_name("generate_balance_config"))
+        .about("generates balance config yaml");
 
     {
         let available_moves = game.get_free_moves();
@@ -80,6 +83,9 @@ fn main() {
         },
         ("next_round", Some(cmd)) => {
             _next_round_game(cmd, game, &config, &moves_config, next_game_file);
+        },
+        ("generate_balance_config", Some(cmd)) => {
+            generate_balance_config().write_to_yaml(String::from("balance.yaml"));
         },
         (name, Some(cmd)) => {
             _perform_move(&name, cmd, game, &config, &moves_config, next_game_file);

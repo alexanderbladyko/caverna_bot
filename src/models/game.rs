@@ -172,7 +172,6 @@ impl Game {
     }
 
     pub fn get_next_user(&self) -> String {
-        let next_users = self.order.clone();
         let position = self.order.clone()
             .iter()
             .position(|p| *p == self.next)

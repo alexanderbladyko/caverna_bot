@@ -6,6 +6,7 @@ use constants;
 use models::game::{Game};
 use moves::actions::{MoveAction, Actions, UpdateResources};
 use moves::config::{MovesConfig};
+use moves::{constants as MovesConstants};
 
 
 pub fn collect_actions(game: &Game, moves_config: &MovesConfig, moves: Vec<&Move>) -> Vec<Actions> {
@@ -45,11 +46,11 @@ pub struct DriftMining {}
 
 impl Move for DriftMining {
     fn get_name(&self) -> &str {
-        "drift_mining"
+        MovesConstants::DRIFT_MINING
     }
 
     fn get_sub_command(&self) -> App<'static, 'static> {
-        SubCommand::with_name("drift_mining")
+        SubCommand::with_name(MovesConstants::DRIFT_MINING)
             .about("Drift Mining")
             .arg(Arg::with_name("hall_slot"))
             .arg(Arg::with_name("room_slot"))
@@ -101,11 +102,11 @@ pub struct Logging {}
 
 impl Move for Logging {
     fn get_name(&self) -> &str {
-        "logging"
+        MovesConstants::LOGGING
     }
 
     fn get_sub_command(&self) -> App<'static, 'static> {
-        SubCommand::with_name("logging")
+        SubCommand::with_name(MovesConstants::LOGGING)
             .about("Logging")
             .arg(Arg::with_name("extraction"))
     }
@@ -159,11 +160,11 @@ pub struct WoodGathering {}
 
 impl Move for WoodGathering {
     fn get_name(&self) -> &str {
-        "wood_gathering"
+        MovesConstants::WOOD_GATHERING
     }
 
     fn get_sub_command(&self) -> App<'static, 'static> {
-        SubCommand::with_name("wood_gathering")
+        SubCommand::with_name(MovesConstants::WOOD_GATHERING)
             .about("Wood Gathering")
     }
 
@@ -222,11 +223,11 @@ impl Excavation {
 
 impl Move for Excavation {
     fn get_name(&self) -> &str {
-        "excavation"
+        MovesConstants::EXCAVATION
     }
 
     fn get_sub_command(&self) -> App<'static, 'static> {
-        SubCommand::with_name("excavation")
+        SubCommand::with_name(MovesConstants::EXCAVATION)
             .about("Excavation")
             .arg(Arg::with_name("room_slot")
                 .required(true)
@@ -291,11 +292,11 @@ pub struct Supplies {}
 
 impl Move for Supplies {
     fn get_name(&self) -> &str {
-        "supplies"
+        MovesConstants::SUPPLIES
     }
 
     fn get_sub_command(&self) -> App<'static, 'static> {
-        SubCommand::with_name("supplies")
+        SubCommand::with_name(MovesConstants::SUPPLIES)
             .about("Supplies")
     }
 
@@ -342,11 +343,11 @@ pub struct Clearing {}
 
 impl Move for Clearing {
     fn get_name(&self) -> &str {
-        "clearing"
+        MovesConstants::CLEARING
     }
 
     fn get_sub_command(&self) -> App<'static, 'static> {
-        SubCommand::with_name("wood_gathering")
+        SubCommand::with_name(MovesConstants::CLEARING)
             .about("Wood Gathering")
     }
 
@@ -385,11 +386,11 @@ pub struct StartingPlayer {}
 
 impl Move for StartingPlayer {
     fn get_name(&self) -> &str {
-        "starting_player"
+        MovesConstants::STARTING_PLAYER
     }
 
     fn get_sub_command(&self) -> App<'static, 'static> {
-        SubCommand::with_name("starting_player")
+        SubCommand::with_name(MovesConstants::STARTING_PLAYER)
             .about("Starting player")
     }
 

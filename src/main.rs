@@ -25,7 +25,7 @@ use balance::utils::generate_balance_config;
 use models::game::{Game};
 use moves::config::{MovesConfig};
 use moves::actions::{NextUser, ChangeStatus, ReserveGnome, BlockMove};
-use moves::core::{Move, get_from_string, collect_actions};
+use moves::core::{get_from_string};
 
 
 fn main() {
@@ -74,17 +74,17 @@ fn main() {
     let matches = app.get_matches();
 
     match matches.subcommand() {
-        ("show", Some(m)) => {
+        ("show", Some(_)) => {
             println!("{:?}", game);
             println!("{:?}", moves_config);
         },
-        ("decide", Some(m)) => {
+        ("decide", Some(_)) => {
             _decide(game, &moves_config);
         },
         ("next_round", Some(cmd)) => {
             _next_round_game(cmd, game, &config, &moves_config, next_game_file);
         },
-        ("generate_balance_config", Some(cmd)) => {
+        ("generate_balance_config", Some(_)) => {
             generate_balance_config().write_to_yaml(String::from("balance.yaml"));
         },
         (name, Some(cmd)) => {
@@ -175,7 +175,7 @@ fn _next_round_game(cmd: &ArgMatches, game: &mut Game, config: &Config,
 
     match cmd.value_of("new_move") {
         Some(new_move) => match get_from_string(new_move) {
-            Ok(mov) => {
+            Ok(_) => {
                 for mov in game.clone().get_all_moves() {
                     mov.on_next_turn(game, &moves_config);
                 }

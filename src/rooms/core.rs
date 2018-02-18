@@ -6,6 +6,7 @@ use rooms::{constants as RoomConstants};
 
 pub struct ResourceSlots {
     types: &'static [constants::ResourceType],
+
     size: u32,
 }
 

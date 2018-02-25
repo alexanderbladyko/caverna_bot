@@ -8,6 +8,7 @@ extern crate clap;
 #[macro_use]
 pub mod common;
 
+pub mod actions;
 pub mod config;
 pub mod constants;
 pub mod balance;
@@ -24,7 +25,7 @@ use config::{Config};
 use balance::utils::generate_balance_config;
 use models::game::{Game};
 use moves::config::{MovesConfig};
-use moves::actions::{NextUser, ChangeStatus, ReserveGnome, BlockMove};
+use actions::{NextUser, ChangeStatus, ReserveGnome, BlockMove};
 use moves::core::{get_from_string};
 
 
@@ -53,8 +54,14 @@ fn main() {
             .help("New move")
             .long("new_move")
             .short("n")));
-    app = app.subcommand(SubCommand::with_name("generate_balance_config"))
-        .about("generates balance config yaml");
+    app = app.subcommand(SubCommand::with_name("generate_balance_config")
+        .about("generates balance config yaml")
+        .arg(Arg::with_name("output")
+            .takes_value(true)
+            .help("Output file")
+            .long("output")
+            .short("o")
+        ));
 
     {
         let available_moves = game.get_free_moves();
@@ -84,8 +91,9 @@ fn main() {
         ("next_round", Some(cmd)) => {
             _next_round_game(cmd, game, &config, &moves_config, next_game_file);
         },
-        ("generate_balance_config", Some(_)) => {
-            generate_balance_config().write_to_yaml(String::from("balance.yaml"));
+        ("generate_balance_config", Some(cmd)) => {
+            let output_file: &str = cmd.value_of("output").unwrap_or("balance.yaml");
+            generate_balance_config().write_to_yaml(String::from(output_file));
         },
         (name, Some(cmd)) => {
             _perform_move(&name, cmd, game, &config, &moves_config, next_game_file);

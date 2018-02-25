@@ -8,7 +8,7 @@ mod test {
         use test::base;
 
         use constants;
-        use moves::actions::{MoveAction, UpdateResources};
+        use actions::{MoveAction, UpdateResources};
 
         #[test]
         fn test_perform() {
@@ -33,7 +33,7 @@ mod test {
         use test::base;
 
         use constants;
-        use moves::actions::{MoveAction, SpawnGnome};
+        use actions::{MoveAction, SpawnGnome};
 
         #[test]
         fn test_perform() {
@@ -56,7 +56,7 @@ mod test {
         use test::base;
 
         use constants;
-        use moves::actions::{MoveAction, FirstPlayer};
+        use actions::{MoveAction, FirstPlayer};
 
         #[test]
         fn test_perform() {
@@ -90,7 +90,7 @@ mod test {
         use test::base;
 
         use constants;
-        use moves::actions::{MoveAction, ReserveGnome};
+        use actions::{MoveAction, ReserveGnome};
 
         #[test]
         fn test_perform() {
@@ -113,7 +113,7 @@ mod test {
         use test::base;
 
         use constants;
-        use moves::actions::{MoveAction, ChangeStatus};
+        use actions::{MoveAction, ChangeStatus};
 
         #[test]
         fn test_perform() {

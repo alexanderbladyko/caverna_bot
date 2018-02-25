@@ -4,7 +4,7 @@ use clap::{SubCommand, Arg, App, ArgMatches};
 
 use constants;
 use models::game::{Game};
-use moves::actions::{MoveAction, Actions, UpdateResources};
+use actions::{MoveAction, Actions, UpdateResources};
 use moves::config::{MovesConfig};
 use moves::{constants as MovesConstants};
 
@@ -20,6 +20,7 @@ pub fn collect_actions(game: &Game, moves_config: &MovesConfig, moves: Vec<&Move
 pub trait Move {
     fn get_name(&self) -> &str;
     fn get_sub_command(&self) -> App<'static, 'static>;
+//    fn parse_args(&self) -> HashMap
     fn get_all_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions>;
     fn get_actions(&self, game: Game, moves_config: &MovesConfig, args: &ArgMatches) -> Actions;
     fn on_next_turn(&self, game: &mut Game, moves_config: &MovesConfig);

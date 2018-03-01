@@ -45,6 +45,7 @@ players:
       gold: 5
       food: 1
     moves: []
+    fines: 0
   - name: bot2
     gnomes: 2
     moved_gnomes: 0
@@ -60,3 +61,4 @@ players:
       gold: 5
       food: 1
     moves: []
+    fines: 0

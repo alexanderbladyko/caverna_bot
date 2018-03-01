@@ -3,7 +3,7 @@ use std::fs;
 use std::path;
 use serde_yaml;
 
-use constants::{InsideElement, OutsideElement, GameStatus};
+use constants::{ResourceType, InsideElement, OutsideElement, GameStatus};
 use config::{Config};
 use rooms::core::{Room, get_from_string as get_room};
 use models::moves::{MovesData};
@@ -35,6 +35,8 @@ pub struct Player {
     pub gnomes: u32,
     pub child_gnomes: u32,
     pub moved_gnomes: u32,
+
+    pub fines: u32,
 
     pub caverns: Vec<PlayerCavern>,
 
@@ -102,6 +104,20 @@ impl Player {
 
     pub fn free_gnomes(&self) -> u32 {
         self.gnomes - self.moved_gnomes
+    }
+
+    pub fn get_resource(&self, resource: ResourceType) -> u32 {
+        *self.resources.get(&resource.str_key()).unwrap_or(&0)
+    }
+
+    pub fn get_free_room_slots(&self) -> u32 {
+        let mut count = 0;
+        for i in 0..16 {
+            if self.rooms.iter().find(|r| r.position == i).is_none() {
+                count += 1;
+            }
+        }
+        count
     }
 }
 

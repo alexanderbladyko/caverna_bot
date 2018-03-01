@@ -29,6 +29,8 @@ pub fn get_game_with_2_players() -> Game {
                 resources: HashMap::new(),
 
                 moves: vec![],
+
+                fines: 0,
             },
             Player {
                 name: String::from("p2"),
@@ -47,6 +49,7 @@ pub fn get_game_with_2_players() -> Game {
 
                 moves: vec![],
 
+                fines: 0,
             },
         ],
 

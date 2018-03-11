@@ -20,9 +20,11 @@ pub fn collect_actions(game: &Game, moves_config: &MovesConfig, moves: Vec<&Move
 pub trait Move {
     fn get_name(&self) -> &str;
     fn get_sub_command(&self) -> App<'static, 'static>;
-//    fn parse_args(&self) -> HashMap
+    fn parse_args(&self, _args: &ArgMatches) -> HashMap<String, String> {
+        HashMap::new()
+    }
     fn get_all_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions>;
-    fn get_actions(&self, game: Game, moves_config: &MovesConfig, args: &ArgMatches) -> Actions;
+    fn get_actions(&self, game: Game, moves_config: &MovesConfig, args: &HashMap<String, String>) -> Actions;
     fn on_next_turn(&self, game: &mut Game, moves_config: &MovesConfig);
 }
 
@@ -57,6 +59,13 @@ impl Move for DriftMining {
             .arg(Arg::with_name("room_slot"))
     }
 
+    fn parse_args(&self, args: &ArgMatches) -> HashMap<String, String> {
+        hash_map! {
+            String::from("hall_slot") => String::from(args.value_of("hall_slot").unwrap()),
+            String::from("room_slot") => String::from(args.value_of("room_slot").unwrap())
+        }
+    }
+
     fn get_all_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
@@ -71,13 +80,16 @@ impl Move for DriftMining {
 
         let mut result: Vec<Actions> = Vec::new();
         result.push(Actions {
-            weight: 0,
+            args: hash_map! {
+                String::from("hall_slot") => String::new(),
+                String::from("room_slot") => String::new()
+            },
             actions,
         });
         result
     }
 
-    fn get_actions(&self, game: Game, moves_config: &MovesConfig, args: &ArgMatches) -> Actions {
+    fn get_actions(&self, game: Game, moves_config: &MovesConfig, _args: &HashMap<String, String>) -> Actions {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
             constants::ResourceType::Stone.str_key(), moves_config.drift_mining.stone_incr
@@ -89,7 +101,7 @@ impl Move for DriftMining {
             update_hash,
         }));
         Actions {
-            weight: 0,
+            args: HashMap::new(),
             actions,
         }
     }
@@ -112,7 +124,7 @@ impl Move for Logging {
             .arg(Arg::with_name("extraction"))
     }
 
-    fn get_all_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
+    fn get_all_actions(&self, game: Game, _moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
             constants::ResourceType::Wood.str_key(), game.moves.logging.wood
@@ -126,13 +138,13 @@ impl Move for Logging {
 
         let mut result: Vec<Actions> = Vec::new();
         result.push(Actions {
-            weight: 0,
+            args: HashMap::new(),
             actions,
         });
         result
     }
 
-    fn get_actions(&self, game: Game, moves_config: &MovesConfig, args: &ArgMatches) -> Actions {
+    fn get_actions(&self, game: Game, _moves_config: &MovesConfig, _args: &HashMap<String, String>) -> Actions {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
             constants::ResourceType::Wood.str_key(), game.moves.logging.wood
@@ -144,7 +156,7 @@ impl Move for Logging {
             update_hash,
         }));
         Actions {
-            weight: 0,
+            args: HashMap::new(),
             actions,
         }
     }
@@ -169,7 +181,7 @@ impl Move for WoodGathering {
             .about("Wood Gathering")
     }
 
-    fn get_all_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
+    fn get_all_actions(&self, game: Game, _moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
             constants::ResourceType::Wood.str_key(), game.moves.wood_gathering.wood
@@ -183,13 +195,13 @@ impl Move for WoodGathering {
 
         let mut result: Vec<Actions> = Vec::new();
         result.push(Actions {
-            weight: 0,
+            args: HashMap::new(),
             actions,
         });
         result
     }
 
-    fn get_actions(&self, game: Game, moves_config: &MovesConfig, args: &ArgMatches) -> Actions {
+    fn get_actions(&self, game: Game, _moves_config: &MovesConfig, _args: &HashMap<String, String>) -> Actions {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
             constants::ResourceType::Wood.str_key(), game.moves.wood_gathering.wood
@@ -201,7 +213,7 @@ impl Move for WoodGathering {
             update_hash,
         }));
         Actions {
-            weight: 0,
+            args: HashMap::new(),
             actions,
         }
     }
@@ -247,7 +259,7 @@ impl Move for Excavation {
                 .help("Second slot will be room"))
     }
 
-    fn get_all_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
+    fn get_all_actions(&self, game: Game, _moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
             constants::ResourceType::Stone.str_key(), game.moves.excavation.stone
@@ -261,13 +273,13 @@ impl Move for Excavation {
 
         let mut result: Vec<Actions> = Vec::new();
         result.push(Actions {
-            weight: 0,
+            args: HashMap::new(),
             actions,
         });
         result
     }
 
-    fn get_actions(&self, game: Game, moves_config: &MovesConfig, args: &ArgMatches) -> Actions {
+    fn get_actions(&self, game: Game, _moves_config: &MovesConfig, _args: &HashMap<String, String>) -> Actions {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(
             constants::ResourceType::Stone.str_key(), game.moves.excavation.stone
@@ -279,7 +291,7 @@ impl Move for Excavation {
             update_hash,
         }));
         Actions {
-            weight: 0,
+            args: HashMap::new(),
             actions,
         }
     }
@@ -313,11 +325,11 @@ impl Move for Supplies {
         actions.push(Box::new(UpdateResources { player: game.next, update_hash }));
 
         let mut result: Vec<Actions> = Vec::new();
-        result.push(Actions { weight: 0, actions });
+        result.push(Actions { args: HashMap::new(), actions });
         result
     }
 
-    fn get_actions(&self, game: Game, moves_config: &MovesConfig, args: &ArgMatches) -> Actions {
+    fn get_actions(&self, game: Game, moves_config: &MovesConfig, _args: &HashMap<String, String>) -> Actions {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(constants::ResourceType::Stone.str_key(), moves_config.supplies.stone);
         update_hash.insert(constants::ResourceType::Wood.str_key(), moves_config.supplies.wood);
@@ -331,12 +343,12 @@ impl Move for Supplies {
             update_hash,
         }));
         Actions {
-            weight: 0,
+            args: HashMap::new(),
             actions,
         }
     }
 
-    fn on_next_turn(&self, game: &mut Game, moves_config: &MovesConfig) {
+    fn on_next_turn(&self, _game: &mut Game, _moves_config: &MovesConfig) {
     }
 }
 
@@ -352,7 +364,7 @@ impl Move for Clearing {
             .about("Wood Gathering")
     }
 
-    fn get_all_actions(&self, game: Game, moves_config: &MovesConfig) -> Vec<Actions> {
+    fn get_all_actions(&self, game: Game, _moves_config: &MovesConfig) -> Vec<Actions> {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(constants::ResourceType::Wood.str_key(), game.moves.clearing.wood);
 
@@ -360,11 +372,11 @@ impl Move for Clearing {
         actions.push(Box::new(UpdateResources { player: game.next, update_hash }));
 
         let mut result: Vec<Actions> = Vec::new();
-        result.push(Actions { weight: 0, actions });
+        result.push(Actions { args: HashMap::new(), actions });
         result
     }
 
-    fn get_actions(&self, game: Game, moves_config: &MovesConfig, args: &ArgMatches) -> Actions {
+    fn get_actions(&self, game: Game, _moves_config: &MovesConfig, _args: &HashMap<String, String>) -> Actions {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(constants::ResourceType::Wood.str_key(), game.moves.clearing.wood);
 
@@ -374,12 +386,12 @@ impl Move for Clearing {
             update_hash,
         }));
         Actions {
-            weight: 0,
+            args: HashMap::new(),
             actions,
         }
     }
 
-    fn on_next_turn(&self, game: &mut Game, moves_config: &MovesConfig) {
+    fn on_next_turn(&self, _game: &mut Game, _moves_config: &MovesConfig) {
     }
 }
 
@@ -405,11 +417,11 @@ impl Move for StartingPlayer {
         actions.push(Box::new(UpdateResources { player: game.next, update_hash }));
 
         let mut result: Vec<Actions> = Vec::new();
-        result.push(Actions { weight: 0, actions });
+        result.push(Actions { args: HashMap::new(), actions });
         result
     }
 
-    fn get_actions(&self, game: Game, moves_config: &MovesConfig, args: &ArgMatches) -> Actions {
+    fn get_actions(&self, game: Game, moves_config: &MovesConfig, _args: &HashMap<String, String>) -> Actions {
         let mut update_hash: HashMap<String, u32> = HashMap::new();
         update_hash.insert(constants::ResourceType::Gem.str_key(), moves_config.starting_player.gem);
         update_hash.insert(constants::ResourceType::Coal.str_key(), moves_config.starting_player.coal);
@@ -421,7 +433,7 @@ impl Move for StartingPlayer {
             update_hash,
         }));
         Actions {
-            weight: 0,
+            args: HashMap::new(),
             actions,
         }
     }

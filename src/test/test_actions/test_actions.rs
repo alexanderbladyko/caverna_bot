@@ -28,11 +28,8 @@ mod test {
 
     #[cfg(test)]
     mod test_spawn_gnome {
-        use std::collections::HashMap;
-
         use test::base;
 
-        use constants;
         use actions::{MoveAction, SpawnGnome};
 
         #[test]
@@ -51,11 +48,8 @@ mod test {
 
     #[cfg(test)]
     mod test_first_player {
-        use std::collections::HashMap;
-
         use test::base;
 
-        use constants;
         use actions::{MoveAction, FirstPlayer};
 
         #[test]
@@ -85,11 +79,8 @@ mod test {
 
     #[cfg(test)]
     mod test_reserve_gnome {
-        use std::collections::HashMap;
-
         use test::base;
 
-        use constants;
         use actions::{MoveAction, ReserveGnome};
 
         #[test]
@@ -108,8 +99,6 @@ mod test {
 
     #[cfg(test)]
     mod test_change_status {
-        use std::collections::HashMap;
-
         use test::base;
 
         use constants;

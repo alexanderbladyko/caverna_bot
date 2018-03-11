@@ -2,15 +2,17 @@ use std::collections::{HashMap};
 use std::fs;
 use serde_yaml;
 
-use constants::{ALL_RESOURCES};
+use constants::{ALL_RESOURCES, TRIBAL_ANIMALS};
+use actions::{constants as ActionsConstants, Actions};
 use balance::{constants as BalanceConstants};
 use rooms::{constants as RoomConstants};
+use models::game::Game;
 use moves::{constants as MovesConstants};
 
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct BalanceConfig {
-    pub moves: HashMap<String, HashMap<String, f32>>,
+    pub actions: HashMap<String, HashMap<String, f32>>,
     pub resources: HashMap<String, HashMap<String, f32>>,
     pub rooms: HashMap<String, HashMap<String, f32>>,
 }
@@ -45,9 +47,13 @@ pub fn generate_balance_item() -> HashMap<String, f32> {
     };
     for resource in ALL_RESOURCES.iter() {
         hash_map!(map, {
-            format!("{}{}", BalanceConstants::MAX_SLOTS_FOR, &resource.clone().str_key()) => 0f32,
-            format!("{}{}", BalanceConstants::CLEAR_SLOTS_FOR, &resource.clone().str_key()) => 0f32,
             format!("{}{}", BalanceConstants::RESOURCE, &resource.clone().str_key()) => 0f32
+        })
+    }
+    for resource in TRIBAL_ANIMALS.iter() {
+        hash_map!(map, {
+            format!("{}{}", BalanceConstants::MAX_SLOTS_FOR, &resource.clone().str_key()) => 0f32,
+            format!("{}{}", BalanceConstants::CLEAR_SLOTS_FOR, &resource.clone().str_key()) => 0f32
         })
     }
     map
@@ -77,10 +83,30 @@ pub fn generate_moves_with_items() -> HashMap<String, HashMap<String, f32>> {
     hash
 }
 
+pub fn generate_actions_with_items() -> HashMap<String, HashMap<String, f32>> {
+    let mut hash: HashMap<String, HashMap<String, f32>> = HashMap::new();
+    ActionsConstants::ALL_PLAYER_ACTIONS.into_iter().for_each(|r| {
+        if *r != ActionsConstants::UPDATE_RESOURCES {
+            hash.insert(String::from(*r), generate_balance_item());
+        }
+    });
+    hash
+}
+
 pub fn generate_balance_config() -> BalanceConfig {
     BalanceConfig {
+        actions: generate_actions_with_items(),
         rooms: generate_room_with_items(),
         resources: generate_resources_with_items(),
-        moves: generate_moves_with_items(),
     }
+}
+
+pub fn get_balance_weight(game: &Game, player: &str, balance_config: &BalanceConfig, actions: &Actions) -> i32 {
+    let weight = 0;
+
+    let player = game.get_player(player);
+
+    balance_config.
+
+    weight
 }

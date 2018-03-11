@@ -19,8 +19,8 @@ pub trait MoveAction {
 // ----- Player actions -----
 
 pub struct Actions {
-    pub weight: i64,
     pub actions: Vec<Box<MoveAction>>,
+    pub args: HashMap<String, String>,
 }
 
 impl Actions {

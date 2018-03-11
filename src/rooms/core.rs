@@ -5,8 +5,10 @@ use rooms::{constants as RoomConstants};
 
 
 pub struct ResourceSlots {
+    #[allow(dead_code)]
     types: &'static [constants::ResourceType],
 
+    #[allow(dead_code)]
     size: u32,
 }
 

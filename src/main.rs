@@ -102,7 +102,7 @@ fn main() {
     };
 }
 
-fn _decide(game: &mut Game, moves_config: &MovesConfig) {
+fn _decide(game: &mut Game, _moves_config: &MovesConfig) {
     if game.status != constants::GameStatus::PlayerMove {
         panic!("Status is not '{:?}'", constants::GameStatus::PlayerMove);
     }
@@ -110,18 +110,18 @@ fn _decide(game: &mut Game, moves_config: &MovesConfig) {
         .iter()
         .for_each(|m| {
             match get_from_string(m) {
-                Ok(mov) => {
+                Ok(_mov) => {
                     println!("Exploring '{:?}'", m);
-                    let actions = mov.get_all_actions(game.clone(), &moves_config);
-                    actions
-                        .iter()
-                        .for_each(|a| println!("{:?} - {:?}", a.weight, a.get_info()));
-                    let info = actions
-                        .iter()
-                        .max_by_key(|a| a.weight)
-                        .unwrap()
-                        .get_info();
-                    println!("Max {:?}", info);
+//                    let actions = mov.get_all_actions(game.clone(), &moves_config);
+//                    actions
+//                        .iter()
+//                        .for_each(|a| println!("{:?} - {:?}", a.weight, a.get_info()));
+//                    let info = actions
+//                        .iter()
+//                        .max_by_key(|a| a.weight)
+//                        .unwrap()
+//                        .get_info();
+//                    println!("Max {:?}", info);
                 },
                 Err(_) => panic!(format!("Not found implementation for command: {}", m)),
             }
@@ -136,7 +136,8 @@ fn _perform_move(name: &str, cmd: &ArgMatches, game: &mut Game, config: &Config,
     }
     match get_from_string(name) {
         Ok(mov) => {
-            let mut actions = mov.get_actions(game.clone(), &moves_config, &cmd);
+            let args = mov.parse_args(cmd);
+            let mut actions = mov.get_actions(game.clone(), &moves_config, &args);
 
             actions.actions.push(Box::from(ReserveGnome {
                 player: game.next.clone(),

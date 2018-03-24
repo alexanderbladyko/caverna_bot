@@ -138,10 +138,10 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn get_player(&self, player_name: &String) -> &Player {
+    pub fn get_player(&self, player_name: &str) -> &Player {
         self.players
             .iter()
-            .find(|p| p.name == *player_name)
+            .find(|p| p.name.eq(player_name))
             .unwrap()
     }
 
@@ -235,3 +235,26 @@ impl Game {
         serde_yaml::to_writer(file, &self).unwrap()
     }
 }
+
+pub trait GetPlayer<T> {
+    fn get_player(&self, player_name: T) -> &Player;
+}
+
+impl<'a> GetPlayer<&'a str> for Game {
+    fn get_player(&self, player_name: &str) -> &Player {
+        self.players
+            .iter()
+            .find(|p| p.name.eq(player_name))
+            .unwrap()
+    }
+}
+
+impl<'a> GetPlayer<&'a String> for Game {
+    fn get_player(&self, player_name: &String) -> &Player {
+        self.players
+            .iter()
+            .find(|p| p.name.eq(player_name))
+            .unwrap()
+    }
+}
+

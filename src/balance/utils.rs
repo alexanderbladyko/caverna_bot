@@ -106,7 +106,5 @@ pub fn get_balance_weight(game: &Game, player: &str, balance_config: &BalanceCon
 
     let player = game.get_player(player);
 
-    balance_config.
-
     weight
 }

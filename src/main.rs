@@ -16,6 +16,7 @@ pub mod models;
 pub mod moves;
 pub mod rooms;
 pub mod score;
+pub mod simulation;
 pub mod test;
 
 use clap::{App, SubCommand, Arg, ArgMatches};

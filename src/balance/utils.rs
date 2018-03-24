@@ -101,10 +101,10 @@ pub fn generate_balance_config() -> BalanceConfig {
     }
 }
 
-pub fn get_balance_weight(game: &Game, player: &str, balance_config: &BalanceConfig, actions: &Actions) -> i32 {
+pub fn get_balance_weight(game: &Game, player: &str, _balance_config: &BalanceConfig, _actions: &Actions) -> i32 {
     let weight = 0;
 
-    let player = game.get_player(player);
+    let _player = game.get_player(player);
 
     weight
 }

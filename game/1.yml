@@ -46,6 +46,7 @@ players:
       food: 1
     moves: []
     fines: 0
+    warriors: []
   - name: bot2
     gnomes: 2
     moved_gnomes: 0
@@ -62,3 +63,4 @@ players:
       food: 1
     moves: []
     fines: 0
+    warriors: []

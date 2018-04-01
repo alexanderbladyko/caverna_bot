@@ -16,8 +16,8 @@ pub enum InsideElement {
 }
 
 impl InsideElement {
-    pub fn str_key(self) -> String {
-        String::from(match self {
+    pub fn str_key(&self) -> String {
+        String::from(match *self {
             InsideElement::Room => "room",
             InsideElement::Hall => "hall",
             InsideElement::MineHall => "mine_hall",
@@ -34,7 +34,7 @@ pub enum OutsideElement {
     Fence,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Hash, PartialEq)]
 pub enum ResourceType {
     Gem,
     Food,
@@ -52,8 +52,8 @@ pub enum ResourceType {
 }
 
 impl ResourceType {
-    pub fn str_key(self) -> String {
-        String::from(match self {
+    pub fn str_key(&self) -> String {
+        String::from(match *self {
             ResourceType::Gem => "gem",
             ResourceType::Food => "food",
             ResourceType::Gold => "gold",

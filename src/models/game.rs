@@ -5,6 +5,7 @@ use serde_yaml;
 
 use constants::{ResourceType, InsideElement, OutsideElement, GameStatus};
 use config::{Config};
+use rooms::constants::{GREEN_ROOMS, GINGER_ROOMS, YELLOW_ROOMS};
 use rooms::core::{Room, get_from_string as get_room};
 use models::moves::{MovesData};
 use moves::core::{get_from_string as get_move, Move};
@@ -47,6 +48,8 @@ pub struct Player {
     pub resources: HashMap<String, u32>,
 
     pub moves: Vec<String>,
+
+    pub warriors: Vec<u32>,
 }
 
 impl Player {
@@ -102,7 +105,11 @@ impl Player {
             .collect()
     }
 
-    pub fn free_gnomes(&self) -> u32 {
+    pub fn get_all_gnomes_count(&self) -> u32 {
+        self.gnomes + self.child_gnomes
+    }
+
+    pub fn get_free_gnomes(&self) -> u32 {
         self.gnomes - self.moved_gnomes
     }
 
@@ -118,6 +125,53 @@ impl Player {
             }
         }
         count
+    }
+
+    pub fn get_free_field_slots(&self) -> u32 {
+        let mut count = 0;
+        for i in 0..16 {
+            if self.fields.iter().find(|r| r.position == i).is_none() {
+                count += 1;
+            }
+        }
+        count
+    }
+
+    pub fn get_gnomes_slots(&self) -> u32 {
+        self.rooms
+            .iter()
+            .map(|r| get_room(r.room_type.as_str()).unwrap().get_gnome_slots())
+            .sum()
+    }
+
+    pub fn get_free_gnome_slots(&self) -> u32 {
+        self.get_gnomes_slots() - self.gnomes - self.child_gnomes
+    }
+
+    pub fn get_yellow_rooms_count(&self) -> u32 {
+        self.rooms.iter().filter(|r| YELLOW_ROOMS.contains(&r.room_type.as_str())).count() as u32
+    }
+
+    pub fn get_ginger_rooms_count(&self) -> u32 {
+        self.rooms.iter().filter(|r| GINGER_ROOMS.contains(&r.room_type.as_str())).count() as u32
+    }
+
+    pub fn get_green_rooms_count(&self) -> u32 {
+        self.rooms.iter().filter(|r| GREEN_ROOMS.contains(&r.room_type.as_str())).count() as u32
+    }
+
+    pub fn get_resource_clear_slots(&self, resource: &ResourceType) -> u32 {
+        self.rooms
+            .iter()
+            .map(|r| get_room(&r.room_type).unwrap().get_slots().get_clear_slots(resource))
+            .sum()
+    }
+
+    pub fn get_resource_max_slots(&self, resource: &ResourceType) -> u32 {
+        self.rooms
+            .iter()
+            .map(|r| get_room(&r.room_type).unwrap().get_slots().get_max_slots(resource))
+            .sum()
     }
 }
 
@@ -183,7 +237,7 @@ impl Game {
     }
 
     pub fn is_last_move(&self) -> bool {
-        let gnomes: u32 = self.players.iter().map(|p| p.free_gnomes()).sum();
+        let gnomes: u32 = self.players.iter().map(|p| p.get_free_gnomes()).sum();
         gnomes <= 1
     }
 
@@ -198,7 +252,7 @@ impl Game {
         after
             .into_iter()
             .map(|n| self.get_player(&n).clone())
-            .find(|p| p.free_gnomes() > 0)
+            .find(|p| p.get_free_gnomes() > 0)
             .unwrap()
             .name
     }

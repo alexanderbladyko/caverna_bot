@@ -5,11 +5,25 @@ use rooms::{constants as RoomConstants};
 
 
 pub struct ResourceSlots {
-    #[allow(dead_code)]
     types: &'static [constants::ResourceType],
 
-    #[allow(dead_code)]
     size: u32,
+}
+
+impl ResourceSlots {
+    pub fn get_clear_slots(&self, resource: &constants::ResourceType) -> u32 {
+        if self.types.len() == 1 && self.types[0] == *resource {
+            return self.size;
+        }
+        0u32
+    }
+
+    pub fn get_max_slots(&self, resource: &constants::ResourceType) -> u32 {
+        if self.types.contains(resource) {
+            return self.size;
+        }
+        0u32
+    }
 }
 
 pub trait Room {

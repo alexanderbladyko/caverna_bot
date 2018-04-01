@@ -1,5 +1,6 @@
 pub mod constants;
 
+use std::any::Any;
 use std::collections::HashMap;
 
 use actions::{constants as ActionsConstants};
@@ -13,6 +14,8 @@ pub trait MoveAction {
     fn perform(&self, game: &mut Game);
 
     fn get_info(&self) -> String;
+
+    fn as_any(&self) -> &Any;
 }
 
 
@@ -57,6 +60,10 @@ impl MoveAction for UpdateResources {
     fn get_info(&self) -> String {
         format!("Updating resources {:?} for {:?}", self.update_hash, self.player)
     }
+
+    fn as_any(&self) -> &Any {
+        self
+    }
 }
 
 pub struct BuildRooms {
@@ -78,6 +85,10 @@ impl MoveAction for BuildRooms {
     fn get_info(&self) -> String {
         format!("Building rooms {:?} for {:?}", self.rooms, self.player)
     }
+
+    fn as_any(&self) -> &Any {
+        self
+    }
 }
 
 pub struct BuildFields {
@@ -97,6 +108,10 @@ impl MoveAction for BuildFields {
     fn get_info(&self) -> String {
         format!("Building fields {:?} for {:?}", self.fields, self.player)
     }
+
+    fn as_any(&self) -> &Any {
+        self
+    }
 }
 
 pub struct SpawnGnome {
@@ -114,6 +129,10 @@ impl MoveAction for SpawnGnome {
 
     fn get_info(&self) -> String {
         format!("Spawning new gnome for {:?}", self.player)
+    }
+
+    fn as_any(&self) -> &Any {
+        self
     }
 }
 
@@ -145,6 +164,10 @@ impl MoveAction for FirstPlayer {
     fn get_info(&self) -> String {
         format!("First player is {:?}", self.player)
     }
+
+    fn as_any(&self) -> &Any {
+        self
+    }
 }
 
 
@@ -164,6 +187,10 @@ impl MoveAction for IncreaseTurn {
     fn get_info(&self) -> String {
         format!("Game turn +1")
     }
+
+    fn as_any(&self) -> &Any {
+        self
+    }
 }
 
 pub struct ReserveGnome {
@@ -181,6 +208,10 @@ impl MoveAction for ReserveGnome {
 
     fn get_info(&self) -> String {
         format!("Reserve gnome for {:?}", self.player)
+    }
+
+    fn as_any(&self) -> &Any {
+        self
     }
 }
 
@@ -204,6 +235,10 @@ impl MoveAction for BlockMove {
     fn get_info(&self) -> String {
         format!("Blocking move {:?}", self.player_move)
     }
+
+    fn as_any(&self) -> &Any {
+        self
+    }
 }
 
 pub struct ChangeStatus {
@@ -222,6 +257,10 @@ impl MoveAction for ChangeStatus {
     fn get_info(&self) -> String {
         format!("Changing game status {:?}", self.status)
     }
+
+    fn as_any(&self) -> &Any {
+        self
+    }
 }
 
 pub struct NextUser {
@@ -239,5 +278,9 @@ impl MoveAction for NextUser {
 
     fn get_info(&self) -> String {
         format!("Next user is {:?}", self.player)
+    }
+
+    fn as_any(&self) -> &Any {
+        self
     }
 }

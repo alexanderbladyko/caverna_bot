@@ -31,6 +31,8 @@ pub fn get_game_with_2_players() -> Game {
                 moves: vec![],
 
                 fines: 0,
+
+                warriors: vec![],
             },
             Player {
                 name: String::from("p2"),
@@ -50,6 +52,8 @@ pub fn get_game_with_2_players() -> Game {
                 moves: vec![],
 
                 fines: 0,
+
+                warriors: vec![],
             },
         ],
 

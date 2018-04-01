@@ -51,6 +51,7 @@ fn _instantiate_game() -> Game {
                 resources: HashMap::new(),
                 moves: vec![],
                 fines: 0,
+                warriors: vec![],
             },
             Player {
                 name: String::from("p2"),
@@ -63,6 +64,7 @@ fn _instantiate_game() -> Game {
                 resources: HashMap::new(),
                 moves: vec![],
                 fines: 0,
+                warriors: vec![],
             },
         ],
         moves: moves::MovesData {

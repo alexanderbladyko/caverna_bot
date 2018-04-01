@@ -15,3 +15,19 @@ pub const ALL_ROOMS: &'static [&str] = &[
     COUPLE_DWELLING,
     ADDITIONAL_DWELLING,
 ];
+
+pub const GREEN_ROOMS: &'static [&str] = &[
+];
+
+pub const YELLOW_ROOMS: &'static [&str] = &[
+];
+
+pub const GINGER_ROOMS: &'static [&str] = &[
+    ENTRY_LEVEL_DWELLING,
+    DWELLING,
+    SIMPLE_DWELLING1,
+    SIMPLE_DWELLING2,
+    MIXED_DWELLING,
+    COUPLE_DWELLING,
+    ADDITIONAL_DWELLING,
+];

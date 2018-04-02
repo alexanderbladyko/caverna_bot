@@ -70,18 +70,18 @@ impl Player {
         self.moved_gnomes += 1;
     }
 
-    pub fn add_rooms(&mut self, new_caverns: Vec<PlayerCavern>) {
+    pub fn add_rooms(&mut self, new_rooms: Vec<PlayerRoom>) {
         let mut slots: HashSet<u32> = HashSet::from(
-            self.caverns.iter().map(|r| r.position).collect()
+            self.rooms.iter().map(|r| r.position).collect()
         );
-        for cavern in new_caverns.iter() {
-            if slots.contains(&cavern.position) {
-                panic!(format!("Cannon add room {:?} to position {:?}", cavern.cavern_type, cavern.position));
+        for room in new_rooms.iter() {
+            if slots.contains(&room.position) {
+                panic!(format!("Cannon add room {:?} to position {:?}", room.room_type, room.position));
             }
-            slots.insert(cavern.position);
+            slots.insert(room.position);
         }
 
-        self.caverns.extend(new_caverns);
+        self.rooms.extend(new_rooms);
     }
 
     pub fn add_fields(&mut self, new_fields: Vec<PlayerField>) {

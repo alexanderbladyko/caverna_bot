@@ -3,7 +3,7 @@ use std::fs;
 use serde_yaml;
 
 use constants::{ALL_RESOURCES, TRIBAL_ANIMALS, ResourceType};
-use actions::{constants as ActionsConstants, Actions, UpdateResources};
+use actions::{constants as ActionsConstants, Actions, UpdateResources, BuildRooms};
 use balance::{constants as BalanceConstants};
 use rooms::{constants as RoomConstants};
 use models::game::{Game, Player};
@@ -182,6 +182,13 @@ pub fn get_balance_weight(game: &Game, player_name: &str, balance_config: &Balan
                 resources_update.update_hash.iter().for_each(|(resource, count)| {
                     let score = BalanceConfig::calculate(balance_config.resources.get(resource).unwrap(), game, player);
                     weight += (*count as f32) * score;
+                });
+            },
+            ActionsConstants::BUILD_ROOMS => {
+                let build_rooms: &BuildRooms = action.as_any().downcast_ref::<BuildRooms>().unwrap();
+                build_rooms.rooms.iter().for_each(|room| {
+                    let score = BalanceConfig::calculate(balance_config.rooms.get(&room.room_type).unwrap(), game, player);
+                    weight += score;
                 });
             },
             _ => {

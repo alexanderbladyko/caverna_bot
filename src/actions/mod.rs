@@ -5,7 +5,7 @@ use std::collections::HashMap;
 
 use actions::{constants as ActionsConstants};
 use constants::GameStatus;
-use models::game::{Game, PlayerCavern, PlayerField};
+use models::game::{Game, PlayerRoom, PlayerField};
 
 
 pub trait MoveAction {
@@ -68,7 +68,7 @@ impl MoveAction for UpdateResources {
 
 pub struct BuildRooms {
     pub player: String,
-    pub rooms: Vec<PlayerCavern>,
+    pub rooms: Vec<PlayerRoom>,
 }
 
 impl MoveAction for BuildRooms {

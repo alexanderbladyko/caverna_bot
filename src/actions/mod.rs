@@ -7,7 +7,6 @@ use actions::{constants as ActionsConstants};
 use constants::GameStatus;
 use models::game::{Game, PlayerRoom, PlayerField};
 
-
 pub trait MoveAction {
     fn get_name(&self) -> &str;
 
@@ -20,7 +19,6 @@ pub trait MoveAction {
 
 
 // ----- Player actions -----
-
 pub struct Actions {
     pub actions: Vec<Box<MoveAction>>,
     pub args: HashMap<String, String>,

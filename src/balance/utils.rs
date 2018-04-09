@@ -23,6 +23,12 @@ impl BalanceConfig {
         serde_yaml::to_writer(file, &self).unwrap()
     }
 
+    pub fn read_from_yaml(path: String) -> BalanceConfig {
+        let file = fs::File::open(path)
+            .expect("Error reading game file");
+        serde_yaml::from_reader(file).unwrap()
+    }
+
     pub fn calculate(balance_item: &HashMap<String, f32>, game: &Game, player: &Player) -> f32 {
         let mut weight: f32 = 0f32;
 
@@ -42,7 +48,7 @@ impl BalanceConfig {
         weight += (player.get_yellow_rooms_count() as f32) * *balance_item.get(&String::from(BalanceConstants::YELLOW_ROOMS_COUNT)).unwrap();
 
         weight += (player.get_all_gnomes_count() as f32) * *balance_item.get(&String::from(BalanceConstants::GNOMES_COUNT)).unwrap();
-        weight += (*player.warriors.iter().max().unwrap() as f32) * *balance_item.get(&String::from(BalanceConstants::MAX_WARRIOR_LEVEL)).unwrap();
+        weight += (*player.warriors.iter().max().unwrap_or(&0u32) as f32) * *balance_item.get(&String::from(BalanceConstants::MAX_WARRIOR_LEVEL)).unwrap();
         weight += (player.warriors.iter().count() as f32) * *balance_item.get(&String::from(BalanceConstants::WARRIOR_GNOMES_COUNT)).unwrap();
         weight += ((player.get_all_gnomes_count() - player.warriors.iter().count() as u32) as f32) * *balance_item.get(&String::from(BalanceConstants::PEACEFUL_GNOMES_COUNT)).unwrap();
 

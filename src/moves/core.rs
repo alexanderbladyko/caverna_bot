@@ -8,12 +8,23 @@ use actions::{MoveAction, Actions, UpdateResources};
 use moves::config::{MovesConfig};
 use moves::{constants as MovesConstants};
 
+pub struct ActionsFromMove {
+    pub move_name: String,
+    pub actions: Actions,
+}
 
-pub fn collect_actions(game: &Game, moves_config: &MovesConfig, moves: Vec<&Move>) -> Vec<Actions> {
-    let mut actions = Vec::new();
-    moves
+pub fn collect_actions(game: &Game, moves_config: &MovesConfig, moves: Vec<&Move>) -> Vec<ActionsFromMove> {
+    let actions = moves
         .iter()
-        .for_each(|m| actions.extend(m.get_all_actions(game.clone(), moves_config)));
+        .flat_map(|&m| {
+            m.get_all_actions(game.clone(), moves_config).into_iter().map(|a| {
+                ActionsFromMove {
+                    move_name: String::from(m.get_name()),
+                    actions: a,
+                }
+            }).collect::<Vec<ActionsFromMove>>()
+        })
+        .collect();
     actions
 }
 

@@ -1,10 +1,11 @@
 use std::collections::HashMap;
 use constants;
 use balance::utils::{BalanceConfig, get_balance_weight};
-use models::game::{Game, Player};
+use models::game::{Game, Player, PlayerRoom};
 use models::moves;
 use moves::config::{MovesConfig};
 use moves::core::{collect_actions};
+use rooms::constants::ENTRY_LEVEL_DWELLING;
 
 pub fn simulate_2_players_game(moves_config: &MovesConfig, config1: &BalanceConfig, config2: &BalanceConfig) {
     let mut game = _instantiate_game();
@@ -18,18 +19,21 @@ pub fn simulate_2_players_game(moves_config: &MovesConfig, config1: &BalanceConf
 }
 
 fn _run_one_round(game: &mut Game, moves_config: &MovesConfig, configs: HashMap<String, &BalanceConfig>) {
-    while game.is_last_move() == false {
+//    while game.is_last_move() == false {
         let game_cloned = game.clone();
         let player = game_cloned.get_next_user();
         let balance_config = configs.get(&player).unwrap();
         let moves = game_cloned.get_free_moves();
         let actions = collect_actions(game, moves_config, moves);
+
         let max_actions = actions
             .iter()
-            .max_by_key(|a| get_balance_weight(&game_cloned, player.as_str(), balance_config, a))
+            .max_by_key(|a| get_balance_weight(&game_cloned, player.as_str(), balance_config, &a.actions))
             .unwrap();
-        max_actions.perform(game);
-    }
+
+        println!("{:?}", game);
+        max_actions.actions.perform(game);
+//    }
 }
 
 fn _instantiate_game() -> Game {
@@ -47,7 +51,12 @@ fn _instantiate_game() -> Game {
                 moved_gnomes: 0,
                 caverns: vec![],
                 fields: vec![],
-                rooms: vec![],
+                rooms: vec![
+                    PlayerRoom {
+                        position: 0u32,
+                        room_type: String::from(ENTRY_LEVEL_DWELLING),
+                    }
+                ],
                 resources: HashMap::new(),
                 moves: vec![],
                 fines: 0,
@@ -59,7 +68,12 @@ fn _instantiate_game() -> Game {
                 child_gnomes: 0,
                 moved_gnomes: 0,
                 caverns: vec![],
-                rooms: vec![],
+                rooms: vec![
+                    PlayerRoom {
+                        position: 0u32,
+                        room_type: String::from(ENTRY_LEVEL_DWELLING),
+                    }
+                ],
                 fields: vec![],
                 resources: HashMap::new(),
                 moves: vec![],

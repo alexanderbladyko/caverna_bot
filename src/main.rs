@@ -17,17 +17,19 @@ pub mod moves;
 pub mod rooms;
 pub mod score;
 pub mod simulation;
+pub mod utils;
 pub mod test;
 
 use clap::{App, SubCommand, Arg, ArgMatches};
 
 use constants::{GameStatus};
 use config::{Config};
-use balance::utils::generate_balance_config;
+use balance::utils::{generate_balance_config, BalanceConfig};
 use models::game::{Game};
 use moves::config::{MovesConfig};
 use actions::{NextUser, ChangeStatus, ReserveGnome, BlockMove};
 use moves::core::{get_from_string};
+use simulation::simulate_2_players_game;
 
 
 fn main() {
@@ -61,8 +63,19 @@ fn main() {
             .takes_value(true)
             .help("Output file")
             .long("output")
-            .short("o")
-        ));
+            .short("o")));
+    app = app.subcommand(SubCommand::with_name("simulate_game")
+        .about("simulate game between two players")
+        .arg(Arg::with_name("first_config")
+            .takes_value(true)
+            .help("First balance config file")
+            .long("first_config")
+            .short("l")
+        ).arg(Arg::with_name("second_config")
+            .takes_value(true)
+            .help("Second balance config file")
+            .long("second_config")
+            .short("r")));
 
     {
         let available_moves = game.get_free_moves();
@@ -95,6 +108,13 @@ fn main() {
         ("generate_balance_config", Some(cmd)) => {
             let output_file: &str = cmd.value_of("output").unwrap_or("balance.yaml");
             generate_balance_config().write_to_yaml(String::from(output_file));
+        },
+        ("simulate_game", Some(cmd)) => {
+            let first_path: &str = cmd.value_of("first_config").unwrap_or("balance_1.yaml");
+            let second_path: &str = cmd.value_of("second_config").unwrap_or("balance_2.yaml");
+            let first_config = BalanceConfig::read_from_yaml(String::from(first_path));
+            let second_config = BalanceConfig::read_from_yaml(String::from(second_path));
+            simulate_2_players_game(&moves_config, &first_config, &second_config);
         },
         (name, Some(cmd)) => {
             _perform_move(&name, cmd, game, &config, &moves_config, next_game_file);

@@ -1,11 +1,12 @@
 use std::collections::HashMap;
-use constants;
 use balance::utils::{BalanceConfig, get_balance_weight};
+use constants;
 use models::game::{Game, Player, PlayerRoom};
 use models::moves;
 use moves::config::{MovesConfig};
 use moves::core::{collect_actions};
 use rooms::constants::ENTRY_LEVEL_DWELLING;
+use utils::{get_player_move_actions};
 
 pub fn simulate_2_players_game(moves_config: &MovesConfig, config1: &BalanceConfig, config2: &BalanceConfig) {
     let mut game = _instantiate_game();
@@ -19,7 +20,7 @@ pub fn simulate_2_players_game(moves_config: &MovesConfig, config1: &BalanceConf
 }
 
 fn _run_one_round(game: &mut Game, moves_config: &MovesConfig, configs: HashMap<String, &BalanceConfig>) {
-//    while game.is_last_move() == false {
+    while game.get_turn_moves_left() != 0 {
         let game_cloned = game.clone();
         let player = game_cloned.get_next_user();
         let balance_config = configs.get(&player).unwrap();
@@ -30,10 +31,23 @@ fn _run_one_round(game: &mut Game, moves_config: &MovesConfig, configs: HashMap<
             .iter()
             .max_by_key(|a| get_balance_weight(&game_cloned, player.as_str(), balance_config, &a.actions))
             .unwrap();
-
-        println!("{:?}", game);
         max_actions.actions.perform(game);
-//    }
+        println!("{:?}", max_actions.move_name);
+        println!("{:?}", max_actions.actions.get_info());
+
+        let move_actions = get_player_move_actions(max_actions.move_name.clone(), game);
+        move_actions.perform(game);
+        println!("{:?}", game);
+        println!("——————-")
+    }
+}
+
+fn _run_feed_round(game: &mut Game, moves_config: &MovesConfig, configs: HashMap<String, &BalanceConfig>) {
+
+}
+
+fn _run_finish_round(game: &mut Game, moves_config: &MovesConfig, configs: HashMap<String, &BalanceConfig>) {
+
 }
 
 fn _instantiate_game() -> Game {

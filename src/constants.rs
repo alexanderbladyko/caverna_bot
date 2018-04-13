@@ -4,6 +4,7 @@ pub enum GameStatus {
     NextTurnPending,
     GnomeFeeding,
     TribalBreeding,
+    NextTurnCalculating,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

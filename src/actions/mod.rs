@@ -39,6 +39,7 @@ impl Actions {
     }
 }
 
+#[derive(Clone)]
 pub struct UpdateResources {
     pub player: String,
     pub update_hash: HashMap<String, u32>,
@@ -64,6 +65,7 @@ impl MoveAction for UpdateResources {
     }
 }
 
+#[derive(Clone)]
 pub struct BuildRooms {
     pub player: String,
     pub rooms: Vec<PlayerRoom>,
@@ -89,6 +91,7 @@ impl MoveAction for BuildRooms {
     }
 }
 
+#[derive(Clone)]
 pub struct BuildFields {
     pub player: String,
     pub fields: Vec<PlayerField>,
@@ -112,6 +115,7 @@ impl MoveAction for BuildFields {
     }
 }
 
+#[derive(Clone)]
 pub struct SpawnGnome {
     pub player: String,
 }
@@ -134,6 +138,7 @@ impl MoveAction for SpawnGnome {
     }
 }
 
+#[derive(Clone)]
 pub struct FirstPlayer {
     pub player: String,
 }
@@ -171,6 +176,7 @@ impl MoveAction for FirstPlayer {
 
 // ----- Game actions -----
 
+#[derive(Clone)]
 pub struct IncreaseTurn {}
 
 impl MoveAction for IncreaseTurn {
@@ -191,6 +197,7 @@ impl MoveAction for IncreaseTurn {
     }
 }
 
+#[derive(Clone)]
 pub struct ReserveGnome {
     pub player: String,
 }
@@ -213,6 +220,7 @@ impl MoveAction for ReserveGnome {
     }
 }
 
+#[derive(Clone)]
 pub struct BlockMove {
     pub player_move: String,
 }
@@ -239,6 +247,7 @@ impl MoveAction for BlockMove {
     }
 }
 
+#[derive(Clone)]
 pub struct ChangeStatus {
     pub status: GameStatus,
 }
@@ -261,6 +270,7 @@ impl MoveAction for ChangeStatus {
     }
 }
 
+#[derive(Clone)]
 pub struct NextUser {
     pub player: String,
 }

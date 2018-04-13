@@ -236,9 +236,12 @@ impl Game {
             .collect()
     }
 
+    pub fn get_turn_moves_left(&self) -> u32 {
+        self.players.iter().map(|p| p.get_free_gnomes()).sum()
+    }
+
     pub fn is_last_move(&self) -> bool {
-        let gnomes: u32 = self.players.iter().map(|p| p.get_free_gnomes()).sum();
-        gnomes <= 1
+        self.get_turn_moves_left() <= 1
     }
 
     pub fn get_next_user(&self) -> String {

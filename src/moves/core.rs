@@ -4,7 +4,7 @@ use clap::{SubCommand, Arg, App, ArgMatches};
 
 use constants;
 use models::game::{Game};
-use actions::{MoveAction, Actions, UpdateResources};
+use actions::{MoveAction, Actions, UpdateResources, SetFirstPlayer};
 use moves::config::{MovesConfig};
 use moves::{constants as MovesConstants};
 
@@ -425,7 +425,8 @@ impl Move for StartingPlayer {
         update_hash.insert(constants::ResourceType::Food.str_key(), game.moves.starting_player.food);
 
         let mut actions: Vec<Box<MoveAction>> = Vec::new();
-        actions.push(Box::new(UpdateResources { player: game.next, update_hash }));
+        actions.push(Box::new(UpdateResources { player: game.next.clone(), update_hash }));
+        actions.push(Box::new(SetFirstPlayer { player: game.next.clone() }));
 
         let mut result: Vec<Actions> = Vec::new();
         result.push(Actions { args: HashMap::new(), actions });
@@ -440,9 +441,10 @@ impl Move for StartingPlayer {
 
         let mut actions: Vec<Box<MoveAction>> = Vec::new();
         actions.push(Box::new(UpdateResources {
-            player: game.next,
+            player: game.next.clone(),
             update_hash,
         }));
+        actions.push(Box::new(SetFirstPlayer { player: game.next.clone() }));
         Actions {
             args: HashMap::new(),
             actions,

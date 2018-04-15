@@ -165,6 +165,7 @@ fn _perform_move(name: &str, cmd: &ArgMatches, game: &mut Game, config: &Config,
             }));
 
             actions.actions.push(Box::from(BlockMove {
+                player: game.next.clone(),
                 player_move: String::from(name),
             }));
 

@@ -37,6 +37,13 @@ impl Actions {
             .iter()
             .for_each(|a| a.perform(game))
     }
+
+    pub fn from_vec(actions: Vec<Box<MoveAction>>) -> Actions {
+        Actions {
+            args: HashMap::new(),
+            actions,
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -139,6 +146,31 @@ impl MoveAction for SpawnGnome {
 }
 
 #[derive(Clone)]
+pub struct SetFirstPlayer {
+    pub player: String,
+}
+
+impl MoveAction for SetFirstPlayer {
+    fn get_name(&self) -> &str {
+        ActionsConstants::SET_FIRST_PLAYER
+    }
+
+    fn perform(&self, game: &mut Game) {
+        game.first_move = self.player.clone();
+    }
+
+    fn get_info(&self) -> String {
+        format!("Next first player is {:?}", self.player)
+    }
+
+    fn as_any(&self) -> &Any {
+        self
+    }
+}
+
+// ----- Game actions -----
+
+#[derive(Clone)]
 pub struct FirstPlayer {
     pub player: String,
 }
@@ -172,9 +204,6 @@ impl MoveAction for FirstPlayer {
         self
     }
 }
-
-
-// ----- Game actions -----
 
 #[derive(Clone)]
 pub struct IncreaseTurn {}
@@ -222,6 +251,7 @@ impl MoveAction for ReserveGnome {
 
 #[derive(Clone)]
 pub struct BlockMove {
+    pub player: String,
     pub player_move: String,
 }
 
@@ -231,11 +261,7 @@ impl MoveAction for BlockMove {
     }
 
     fn perform(&self, game: &mut Game) {
-        let index = game.available_moves
-            .iter()
-            .position(|x| *x == self.player_move)
-            .unwrap();
-        game.available_moves.remove(index);
+        game.get_player_mut(&self.player).moves.push(self.player_move.clone());
     }
 
     fn get_info(&self) -> String {
@@ -286,6 +312,28 @@ impl MoveAction for NextUser {
 
     fn get_info(&self) -> String {
         format!("Next user is {:?}", self.player)
+    }
+
+    fn as_any(&self) -> &Any {
+        self
+    }
+}
+
+
+#[derive(Clone)]
+pub struct ReleaseMoves {}
+
+impl MoveAction for ReleaseMoves {
+    fn get_name(&self) -> &str {
+        ""
+    }
+
+    fn perform(&self, game: &mut Game) {
+        game.players.iter_mut().for_each(|ref mut p| { p.moves.clear() });
+    }
+
+    fn get_info(&self) -> String {
+        format!("Releasing all moves")
     }
 
     fn as_any(&self) -> &Any {

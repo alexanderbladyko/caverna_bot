@@ -1,5 +1,6 @@
 use actions::{
-    MoveAction, Actions, NextUser, ReserveGnome, BlockMove, ChangeStatus, ReleaseMoves,
+    MoveAction, Actions, NextUser, ReserveGnome, BlockMove, ChangeStatus, ReleaseMoves, OpenNewMove,
+    SetFeedSeverity,
 };
 use constants::GameStatus;
 use models::game::{Game};
@@ -29,7 +30,7 @@ pub fn get_player_move_actions(move_name: String, game: &Game) -> Actions {
 }
 
 
-pub fn get_game_turn_actions(game: &Game) -> Actions {
+pub fn get_game_turn_actions(game: &Game, new_move: &str) -> Actions {
     Actions::from_vec(vec![
         Box::from(ChangeStatus {
             status: GameStatus::PlayerMove,
@@ -37,19 +38,25 @@ pub fn get_game_turn_actions(game: &Game) -> Actions {
         Box::from(ReleaseMoves {}),
         Box::from(NextUser {
             player: (*game.order.first().unwrap()).clone(),
-        })
+        }),
+        Box::from(OpenNewMove {
+            new_move: String::from(new_move),
+        }),
     ])
 }
 
 
-pub fn get_start_feeding_actions(game: &Game) -> Actions {
+pub fn get_start_feeding_actions(game: &Game, severity: u32) -> Actions {
     Actions::from_vec(vec![
         Box::from(ChangeStatus {
             status: GameStatus::GnomeFeeding,
         }),
         Box::from(NextUser {
             player: (*game.order.first().unwrap()).clone(),
-        })
+        }),
+        Box::from(SetFeedSeverity {
+            severity,
+        }),
     ])
 }
 

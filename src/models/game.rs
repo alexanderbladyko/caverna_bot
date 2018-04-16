@@ -189,6 +189,8 @@ pub struct Game {
 
     pub moves: MovesData,
     pub available_moves: Vec<String>,
+
+    pub feed_severity: u32
 }
 
 impl Game {

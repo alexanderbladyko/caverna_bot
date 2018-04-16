@@ -340,3 +340,49 @@ impl MoveAction for ReleaseMoves {
         self
     }
 }
+
+#[derive(Clone)]
+pub struct OpenNewMove {
+    pub new_move: String,
+}
+
+impl MoveAction for OpenNewMove {
+    fn get_name(&self) -> &str {
+        ""
+    }
+
+    fn perform(&self, game: &mut Game) {
+        game.available_moves.push(self.new_move.clone())
+    }
+
+    fn get_info(&self) -> String {
+        format!("Adding new available move: {:?}", self.new_move)
+    }
+
+    fn as_any(&self) -> &Any {
+        self
+    }
+}
+
+#[derive(Clone)]
+pub struct SetFeedSeverity {
+    pub severity: u32,
+}
+
+impl MoveAction for SetFeedSeverity {
+    fn get_name(&self) -> &str {
+        ""
+    }
+
+    fn perform(&self, game: &mut Game) {
+        game.feed_severity = self.severity;
+    }
+
+    fn get_info(&self) -> String {
+        format!("New feed severity: {:?}", self.severity)
+    }
+
+    fn as_any(&self) -> &Any {
+        self
+    }
+}

@@ -12,6 +12,8 @@ pub fn get_game_with_2_players() -> Game {
         first_move: String::from("p1"),
         order: vec![String::from("p1"), String::from("p2")],
 
+        feed_severity: 2,
+
         players: vec![
             Player {
                 name: String::from("p1"),

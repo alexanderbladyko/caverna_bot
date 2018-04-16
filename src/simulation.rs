@@ -5,6 +5,7 @@ use models::game::{Game, Player, PlayerRoom};
 use models::moves;
 use moves::config::{MovesConfig};
 use moves::core::{collect_actions};
+use moves::{constants as MovesConstants};
 use rooms::constants::ENTRY_LEVEL_DWELLING;
 use utils::{get_player_move_actions, get_game_turn_actions, get_start_feeding_actions, get_tribal_breeding_actions};
 
@@ -16,16 +17,18 @@ pub fn simulate_2_players_game(moves_config: &MovesConfig, config1: &BalanceConf
     };
 
     _run_one_round(&mut game, moves_config, &balances);
-    _run_finish_round(&mut game, moves_config);
-
-    println!("{:?}", game);
-    println!("——————-");
+    _run_finish_round(&mut game, moves_config, MovesConstants::CLEARING);
 
     _run_one_round(&mut game, moves_config, &balances);
-    _run_finish_round(&mut game, moves_config);
+    _run_finish_round(&mut game, moves_config, MovesConstants::CLEARING);
 
-    println!("{:?}", game);
-    println!("——————-");
+    _run_one_round(&mut game, moves_config, &balances);
+    _run_finish_round(&mut game, moves_config, MovesConstants::CLEARING);
+
+    _run_one_round(&mut game, moves_config, &balances);
+    _run_feed_round(&mut game, 1);
+    _run_finish_round(&mut game, moves_config, MovesConstants::CLEARING);
+
 
 }
 
@@ -42,19 +45,20 @@ fn _run_one_round(game: &mut Game, moves_config: &MovesConfig, configs: &HashMap
             .max_by_key(|a| get_balance_weight(&game_cloned, player.as_str(), balance_config, &a.actions))
             .unwrap();
         max_actions.actions.perform(game);
-        println!("{:?}", max_actions.move_name);
-        println!("{:?}", max_actions.actions.get_info());
 
         let move_actions = get_player_move_actions(max_actions.move_name.clone(), game);
         move_actions.perform(game);
-        println!("{:?}", game);
-        println!("——————-");
     }
 }
 
-fn _run_feed_round(game: &mut Game) {
-    let actions = get_start_feeding_actions(game);
+fn _run_feed_round(game: &mut Game, severity: u32) {
+    let actions = get_start_feeding_actions(game, severity);
     actions.perform(game);
+
+    game.players.iter().for_each(|player| {
+        // TODO: collect player max effective feeding actions and perform it
+    })
+
 }
 
 fn _run_breed_round(game: &mut Game) {
@@ -62,8 +66,8 @@ fn _run_breed_round(game: &mut Game) {
     actions.perform(game);
 }
 
-fn _run_finish_round(game: &mut Game, moves_config: &MovesConfig) {
-    let actions = get_game_turn_actions(game);
+fn _run_finish_round(game: &mut Game, moves_config: &MovesConfig, new_move: &str) {
+    let actions = get_game_turn_actions(game, new_move);
     actions.perform(game);
 
     for mov in game.clone().get_all_moves() {
@@ -78,6 +82,7 @@ fn _instantiate_game() -> Game {
         next: String::from("p1"),
         first_move: String::from("p1"),
         order: vec![String::from("p1"), String::from("p2")],
+        feed_severity: 2,
         players: vec![
             Player {
                 name: String::from("p1"),

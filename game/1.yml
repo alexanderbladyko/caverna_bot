@@ -19,6 +19,7 @@ moves:
     wood: 0
   starting_player:
     food: 0
+feed_severity: 2
 available_moves:
   - drift_mining
   - logging

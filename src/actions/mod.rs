@@ -4,7 +4,7 @@ use std::any::Any;
 use std::collections::HashMap;
 
 use actions::{constants as ActionsConstants};
-use constants::GameStatus;
+use constants::{GameStatus, FeedingAndBreedingStatus};
 use models::game::{Game, PlayerRoom, PlayerField};
 
 pub trait MoveAction {
@@ -365,21 +365,21 @@ impl MoveAction for OpenNewMove {
 }
 
 #[derive(Clone)]
-pub struct SetFeedSeverity {
-    pub severity: u32,
+pub struct SetFeedingAndBreedingStatus {
+    pub status: FeedingAndBreedingStatus,
 }
 
-impl MoveAction for SetFeedSeverity {
+impl MoveAction for SetFeedingAndBreedingStatus {
     fn get_name(&self) -> &str {
         ""
     }
 
     fn perform(&self, game: &mut Game) {
-        game.feed_severity = self.severity;
+        game.feeding_and_breeding_status = self.status.clone();
     }
 
     fn get_info(&self) -> String {
-        format!("New feed severity: {:?}", self.severity)
+        format!("New feed severity: {:?}", self.status)
     }
 
     fn as_any(&self) -> &Any {

@@ -19,7 +19,7 @@ moves:
     wood: 0
   starting_player:
     food: 0
-feed_severity: 2
+feeding_and_breeding_status: Normal
 available_moves:
   - drift_mining
   - logging

@@ -7,12 +7,12 @@ pub fn get_game_with_2_players() -> Game {
     Game {
         turn: 1,
 
-        status: constants::GameStatus::GnomeFeeding,
+        status: constants::GameStatus::PlayerMove,
         next: String::from("p1"),
         first_move: String::from("p1"),
         order: vec![String::from("p1"), String::from("p2")],
 
-        feed_severity: 2,
+        feeding_and_breeding_status: constants::FeedingAndBreedingStatus::Normal,
 
         players: vec![
             Player {

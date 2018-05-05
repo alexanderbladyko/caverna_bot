@@ -3,7 +3,7 @@ use std::fs;
 use std::path;
 use serde_yaml;
 
-use constants::{ResourceType, InsideElement, OutsideElement, GameStatus};
+use constants::{ResourceType, InsideElement, OutsideElement, GameStatus, FeedingAndBreedingStatus};
 use config::{Config};
 use rooms::constants::{GREEN_ROOMS, GINGER_ROOMS, YELLOW_ROOMS};
 use rooms::core::{Room, get_from_string as get_room};
@@ -190,7 +190,7 @@ pub struct Game {
     pub moves: MovesData,
     pub available_moves: Vec<String>,
 
-    pub feed_severity: u32
+    pub feeding_and_breeding_status: FeedingAndBreedingStatus,
 }
 
 impl Game {

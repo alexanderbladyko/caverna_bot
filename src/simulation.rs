@@ -6,8 +6,9 @@ use models::moves;
 use moves::config::{MovesConfig};
 use moves::core::{collect_actions};
 use moves::{constants as MovesConstants};
+use moves::feeding::get_feeding_and_breeding_actions;
 use rooms::constants::ENTRY_LEVEL_DWELLING;
-use utils::{get_player_move_actions, get_game_turn_actions, get_start_feeding_actions, get_tribal_breeding_actions};
+use utils::{get_player_move_actions, get_game_turn_actions, get_start_feeding_and_breeding_actions};
 
 pub fn simulate_2_players_game(moves_config: &MovesConfig, config1: &BalanceConfig, config2: &BalanceConfig) {
     let mut game = _instantiate_game();
@@ -26,7 +27,7 @@ pub fn simulate_2_players_game(moves_config: &MovesConfig, config1: &BalanceConf
     _run_finish_round(&mut game, moves_config, MovesConstants::CLEARING);
 
     _run_one_round(&mut game, moves_config, &balances);
-    _run_feed_round(&mut game, 1);
+    _run_feed_and_breed_round(&mut game, constants::FeedingAndBreedingStatus::Normal, &balances);
     _run_finish_round(&mut game, moves_config, MovesConstants::CLEARING);
 
 
@@ -51,19 +52,26 @@ fn _run_one_round(game: &mut Game, moves_config: &MovesConfig, configs: &HashMap
     }
 }
 
-fn _run_feed_round(game: &mut Game, severity: u32) {
-    let actions = get_start_feeding_actions(game, severity);
+fn _run_feed_and_breed_round(game: &mut Game, status: constants::FeedingAndBreedingStatus, configs: &HashMap<String, &BalanceConfig>) {
+    let actions = get_start_feeding_and_breeding_actions(game, status.clone());
     actions.perform(game);
 
-    game.players.iter().for_each(|player| {
-        // TODO: collect player max effective feeding actions and perform it
+    let players = game.players.clone();
+
+    players.into_iter().for_each(|player| {
+        let game_cloned = game.clone();
+
+        let balance_config = configs.get(&player.name).unwrap();
+
+        let feeding_actions = get_feeding_and_breeding_actions(&player, status.clone());
+
+        let max_actions = feeding_actions
+            .iter()
+            .max_by_key(|a| get_balance_weight(&game_cloned, player.name.as_str(), balance_config, &a))
+            .unwrap();
+        max_actions.perform(game);
     })
 
-}
-
-fn _run_breed_round(game: &mut Game) {
-    let actions = get_tribal_breeding_actions(game);
-    actions.perform(game);
 }
 
 fn _run_finish_round(game: &mut Game, moves_config: &MovesConfig, new_move: &str) {
@@ -78,11 +86,11 @@ fn _run_finish_round(game: &mut Game, moves_config: &MovesConfig, new_move: &str
 fn _instantiate_game() -> Game {
     Game {
         turn: 1,
-        status: constants::GameStatus::GnomeFeeding,
+        status: constants::GameStatus::PlayerMove,
         next: String::from("p1"),
         first_move: String::from("p1"),
         order: vec![String::from("p1"), String::from("p2")],
-        feed_severity: 2,
+        feeding_and_breeding_status: constants::FeedingAndBreedingStatus::Normal,
         players: vec![
             Player {
                 name: String::from("p1"),

@@ -1,8 +1,8 @@
 use actions::{
     MoveAction, Actions, NextUser, ReserveGnome, BlockMove, ChangeStatus, ReleaseMoves, OpenNewMove,
-    SetFeedSeverity,
+    SetFeedingAndBreedingStatus,
 };
-use constants::GameStatus;
+use constants::{GameStatus, FeedingAndBreedingStatus};
 use models::game::{Game};
 
 
@@ -46,27 +46,16 @@ pub fn get_game_turn_actions(game: &Game, new_move: &str) -> Actions {
 }
 
 
-pub fn get_start_feeding_actions(game: &Game, severity: u32) -> Actions {
+pub fn get_start_feeding_and_breeding_actions(game: &Game, status: FeedingAndBreedingStatus) -> Actions {
     Actions::from_vec(vec![
         Box::from(ChangeStatus {
-            status: GameStatus::GnomeFeeding,
+            status: GameStatus::FeedingAndBreeding,
         }),
         Box::from(NextUser {
             player: (*game.order.first().unwrap()).clone(),
         }),
-        Box::from(SetFeedSeverity {
-            severity,
+        Box::from(SetFeedingAndBreedingStatus {
+            status,
         }),
-    ])
-}
-
-pub fn get_tribal_breeding_actions(game: &Game) -> Actions {
-    Actions::from_vec(vec![
-        Box::from(ChangeStatus {
-            status: GameStatus::TribalBreeding,
-        }),
-        Box::from(NextUser {
-            player: (*game.order.first().unwrap()).clone(),
-        })
     ])
 }

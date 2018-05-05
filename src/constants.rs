@@ -2,9 +2,17 @@
 pub enum GameStatus {
     PlayerMove,
     NextTurnPending,
-    GnomeFeeding,
-    TribalBreeding,
+    FeedingAndBreeding,
     NextTurnCalculating,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Hash, PartialEq)]
+pub enum FeedingAndBreedingStatus {
+    NoFeeding,
+    Normal,
+    NoBreeding,
+    FeedByOne,
+    FeedingOrBreeding,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

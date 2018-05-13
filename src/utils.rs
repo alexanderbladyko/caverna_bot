@@ -30,8 +30,8 @@ pub fn get_player_move_actions(move_name: String, game: &Game) -> Actions {
 }
 
 
-pub fn get_game_turn_actions(game: &Game, new_move: &str) -> Actions {
-    Actions::from_vec(vec![
+pub fn get_game_turn_actions(game: &Game, new_move: Option<&str>) -> Actions {
+    let mut actions: Vec<Box<MoveAction>> = vec![
         Box::from(ChangeStatus {
             status: GameStatus::PlayerMove,
         }),
@@ -39,12 +39,15 @@ pub fn get_game_turn_actions(game: &Game, new_move: &str) -> Actions {
         Box::from(NextUser {
             player: (*game.order.first().unwrap()).clone(),
         }),
-        Box::from(OpenNewMove {
-            new_move: String::from(new_move),
-        }),
-    ])
+    ];
+    match new_move {
+        Some(m) => actions.push(Box::from(OpenNewMove {
+            new_move: String::from(m),
+        })),
+        None => (),
+    };
+    Actions::from_vec(actions)
 }
-
 
 pub fn get_start_feeding_and_breeding_actions(game: &Game, status: FeedingAndBreedingStatus) -> Actions {
     Actions::from_vec(vec![

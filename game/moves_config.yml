@@ -20,3 +20,7 @@ starting_player:
   food_incr: 1
   coal: 2
   gem: 0
+ruby_mining:
+  from_turn: 2
+  gem_incr: 1
+  gems: 1

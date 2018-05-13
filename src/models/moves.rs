@@ -6,6 +6,7 @@ pub struct MovesData {
     pub excavation: ExcavationData,
     pub clearing: ClearingData,
     pub starting_player: StartingPlayerData,
+    pub ruby_mining: RubyMiningData,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -37,3 +38,9 @@ pub struct ClearingData {
 pub struct StartingPlayerData {
     pub food: u32,
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct RubyMiningData {
+    pub gems: u32,
+}
+

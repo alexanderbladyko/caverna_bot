@@ -78,6 +78,9 @@ pub fn get_game_with_2_players() -> Game {
             starting_player: moves::StartingPlayerData {
                 food: 1,
             },
+            ruby_mining: moves::RubyMiningData {
+                gems: 0,
+            },
         },
         available_moves: vec![
             String::from("drift_mining"),

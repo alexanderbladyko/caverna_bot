@@ -10,6 +10,11 @@ use moves::feeding::get_feeding_and_breeding_actions;
 use rooms::constants::ENTRY_LEVEL_DWELLING;
 use utils::{get_player_move_actions, get_game_turn_actions, get_start_feeding_and_breeding_actions};
 
+
+pub fn simulate_tournament(moves_config: &MovesConfig, configs: Vec<BalanceConfig>) {
+    
+}
+
 pub fn simulate_2_players_game(moves_config: &MovesConfig, config1: &BalanceConfig, config2: &BalanceConfig) {
     let mut game = _instantiate_game();
     let balances = hash_map! {
@@ -17,20 +22,60 @@ pub fn simulate_2_players_game(moves_config: &MovesConfig, config1: &BalanceConf
         String::from("p2") => config2
     };
 
+    // Round #1
     _run_one_round(&mut game, moves_config, &balances);
-    _run_finish_round(&mut game, moves_config, MovesConstants::CLEARING);
+    _run_finish_round(&mut game, moves_config, Option::from(MovesConstants::SHEEP_FARMING));
 
+    // Round #2
     _run_one_round(&mut game, moves_config, &balances);
-    _run_finish_round(&mut game, moves_config, MovesConstants::CLEARING);
+    _run_finish_round(&mut game, moves_config, Option::from(MovesConstants::BLACKSMITHING));
 
-    _run_one_round(&mut game, moves_config, &balances);
-    _run_finish_round(&mut game, moves_config, MovesConstants::CLEARING);
-
+    // Round #3
     _run_one_round(&mut game, moves_config, &balances);
     _run_feed_and_breed_round(&mut game, constants::FeedingAndBreedingStatus::Normal, &balances);
-    _run_finish_round(&mut game, moves_config, MovesConstants::CLEARING);
+    _run_finish_round(&mut game, moves_config, Option::from(MovesConstants::ORE_MINE_CONSTRUCTION));
 
+    // Round #4
+    _run_one_round(&mut game, moves_config, &balances);
+    _run_feed_and_breed_round(&mut game, constants::FeedingAndBreedingStatus::FeedByOne, &balances);
+    _run_finish_round(&mut game, moves_config, Option::from(MovesConstants::WISH_FOR_CHILDREN));
 
+    // Round #5
+    _run_one_round(&mut game, moves_config, &balances);
+    _run_feed_and_breed_round(&mut game, constants::FeedingAndBreedingStatus::Normal, &balances);
+    _run_finish_round(&mut game, moves_config, Option::from(MovesConstants::DONKEY_FARMING));
+
+    // Round #6
+    _run_one_round(&mut game, moves_config, &balances);
+    _run_feed_and_breed_round(&mut game, constants::FeedingAndBreedingStatus::Normal, &balances);
+    _run_finish_round(&mut game, moves_config, Option::from(MovesConstants::RUBY_MINE_CONSTRUCTION));
+
+    // Round #7
+    _run_one_round(&mut game, moves_config, &balances);
+    _run_feed_and_breed_round(&mut game, constants::FeedingAndBreedingStatus::NoBreeding, &balances);
+    _run_finish_round(&mut game, moves_config, Option::from(MovesConstants::ORE_DELIVERY));
+
+    // Round #8
+    _run_one_round(&mut game, moves_config, &balances);
+    _run_feed_and_breed_round(&mut game, constants::FeedingAndBreedingStatus::FeedByOne, &balances);
+    _run_finish_round(&mut game, moves_config, Option::from(MovesConstants::FAMILY_LIFE));
+
+    // Round #9 is skipped for 2 players
+
+    // Round #10
+    _run_one_round(&mut game, moves_config, &balances);
+    _run_feed_and_breed_round(&mut game, constants::FeedingAndBreedingStatus::Normal, &balances);
+    _run_finish_round(&mut game, moves_config, Option::from(MovesConstants::ADVENTURE));
+
+    // Round #11
+    _run_one_round(&mut game, moves_config, &balances);
+    _run_feed_and_breed_round(&mut game, constants::FeedingAndBreedingStatus::FeedingOrBreeding, &balances);
+    _run_finish_round(&mut game, moves_config, Option::from(MovesConstants::RUBY_DELIVERY));
+
+    // Round #12
+    _run_one_round(&mut game, moves_config, &balances);
+    _run_feed_and_breed_round(&mut game, constants::FeedingAndBreedingStatus::Normal, &balances);
+    _run_finish_round(&mut game, moves_config, Option::from(MovesConstants::ORE_TRADING));
 }
 
 fn _run_one_round(game: &mut Game, moves_config: &MovesConfig, configs: &HashMap<String, &BalanceConfig>) {
@@ -74,7 +119,7 @@ fn _run_feed_and_breed_round(game: &mut Game, status: constants::FeedingAndBreed
 
 }
 
-fn _run_finish_round(game: &mut Game, moves_config: &MovesConfig, new_move: &str) {
+fn _run_finish_round(game: &mut Game, moves_config: &MovesConfig, new_move: Option<&str>) {
     let actions = get_game_turn_actions(game, new_move);
     actions.perform(game);
 
@@ -147,6 +192,9 @@ fn _instantiate_game() -> Game {
             },
             starting_player: moves::StartingPlayerData {
                 food: 1,
+            },
+            ruby_mining: moves::RubyMiningData {
+                gems: 0,
             },
         },
         available_moves: vec![

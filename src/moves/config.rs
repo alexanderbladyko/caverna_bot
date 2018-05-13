@@ -48,6 +48,13 @@ pub struct StartingPlayer {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct RubyMining {
+    pub from_turn: u64,
+    pub gem_incr: u32,
+    pub gems: u32,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct MovesConfig {
     pub drift_mining: DriftMining,
     pub logging: Logging,
@@ -56,6 +63,7 @@ pub struct MovesConfig {
     pub supplies: Supplies,
     pub clearing: Clearing,
     pub starting_player: StartingPlayer,
+    pub ruby_mining: RubyMining,
 }
 
 impl MovesConfig {

@@ -19,6 +19,8 @@ moves:
     wood: 0
   starting_player:
     food: 0
+  ruby_mining:
+    gems: 0
 feeding_and_breeding_status: Normal
 available_moves:
   - drift_mining

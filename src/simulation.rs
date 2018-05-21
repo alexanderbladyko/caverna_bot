@@ -1,4 +1,6 @@
 use std::collections::HashMap;
+use rand::{random};
+
 use balance::utils::{BalanceConfig, get_balance_weight};
 use constants;
 use models::game::{Game, Player, PlayerRoom};
@@ -8,14 +10,72 @@ use moves::core::{collect_actions};
 use moves::{constants as MovesConstants};
 use moves::feeding::get_feeding_and_breeding_actions;
 use rooms::constants::ENTRY_LEVEL_DWELLING;
+use score::calculator::get_final_score;
 use utils::{get_player_move_actions, get_game_turn_actions, get_start_feeding_and_breeding_actions};
 
 
-pub fn simulate_tournament(moves_config: &MovesConfig, configs: Vec<BalanceConfig>) {
-    
+pub fn mutate_config(base: &BalanceConfig) -> BalanceConfig {
+    let mut config = base.clone();
+
+    for _ in 0..3 {
+        match random::<i32>() % 3 {
+            0 => _mutate_hash(&mut config.actions),
+            1 => _mutate_hash(&mut config.rooms),
+            2 => _mutate_hash(&mut config.resources),
+            _ => panic!(),
+        }
+    }
+
+    config
 }
 
-pub fn simulate_2_players_game(moves_config: &MovesConfig, config1: &BalanceConfig, config2: &BalanceConfig) {
+pub fn _mutate_hash(cfg: &mut HashMap<String, HashMap<String, f32>>) {
+    let first = random::<usize>() % cfg.len();
+    let some_key = cfg.keys().into_iter().skip(first).next().unwrap().clone();
+
+    let inner_hash = cfg.get_mut(&some_key).unwrap();
+
+    let second = random::<usize>() % inner_hash.len();
+    let some_inner_key = inner_hash.keys().skip(second).next().unwrap().clone();
+
+    let delta: f32 = ((2.0 * random::<f32>() - 1.0) * 10f32).round() / 10f32;
+    *inner_hash.get_mut(&some_inner_key).unwrap() += delta;
+}
+
+pub fn simulate_tournament(moves_config: &MovesConfig, configs: Vec<BalanceConfig>) -> (i32, i32) {
+    let mut score_table: Vec<i32> = vec![0; configs.len()];
+    let mut sum_score_table: Vec<i32> = vec![0; configs.len()];
+
+    for i in 0..configs.len()-1 {
+        for j in i+1..configs.len() {
+            let (first_score, second_score) = simulate_2_players_game(moves_config, &configs[i], &configs[j]);
+            sum_score_table[i] += first_score;
+            sum_score_table[j] += second_score;
+            if first_score == second_score {
+                score_table[i] += 1;
+                score_table[j] += 1;
+            } else if first_score > second_score {
+                score_table[i] += 3;
+            } else {
+                score_table[j] += 3;
+            }
+        }
+    }
+    let (max, _) = score_table
+        .iter()
+        .enumerate()
+        .max_by_key(|&(_, item)| item)
+        .unwrap();
+    let (max_by_score, _) = sum_score_table
+        .iter()
+        .filter(|s| **s != max as i32)
+        .enumerate()
+        .max_by_key(|&(_, item)| item)
+        .unwrap();
+    (max as i32, max_by_score as i32)
+}
+
+pub fn simulate_2_players_game(moves_config: &MovesConfig, config1: &BalanceConfig, config2: &BalanceConfig) -> (i32, i32) {
     let mut game = _instantiate_game();
     let balances = hash_map! {
         String::from("p1") => config1,
@@ -76,6 +136,8 @@ pub fn simulate_2_players_game(moves_config: &MovesConfig, config1: &BalanceConf
     _run_one_round(&mut game, moves_config, &balances);
     _run_feed_and_breed_round(&mut game, constants::FeedingAndBreedingStatus::Normal, &balances);
     _run_finish_round(&mut game, moves_config, Option::from(MovesConstants::ORE_TRADING));
+
+    (get_final_score(game.clone(), &String::from("p1")), get_final_score(game.clone(), &String::from("p2")))
 }
 
 fn _run_one_round(game: &mut Game, moves_config: &MovesConfig, configs: &HashMap<String, &BalanceConfig>) {

@@ -30,7 +30,7 @@ use models::game::{Game};
 use moves::config::{MovesConfig};
 use actions::{NextUser, ChangeStatus, ReserveGnome, BlockMove};
 use moves::core::{get_from_string};
-use simulation::simulate_2_players_game;
+use simulation::{simulate_2_players_game, run_multiple_generations};
 
 
 fn main() {
@@ -77,6 +77,7 @@ fn main() {
             .help("Second balance config file")
             .long("second_config")
             .short("r")));
+    app = app.subcommand(SubCommand::with_name("run_multiple_generations"));
 
     {
         let available_moves = game.get_free_moves();
@@ -116,6 +117,9 @@ fn main() {
             let first_config = BalanceConfig::read_from_yaml(String::from(first_path));
             let second_config = BalanceConfig::read_from_yaml(String::from(second_path));
             simulate_2_players_game(&moves_config, &first_config, &second_config);
+        },
+        ("run_multiple_generations", Some(_)) => {
+            run_multiple_generations(&moves_config, 3);
         },
         (name, Some(cmd)) => {
             _perform_move(&name, cmd, game, &config, &moves_config, next_game_file);

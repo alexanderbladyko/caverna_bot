@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use rand::{random};
 
-use balance::utils::{BalanceConfig, get_balance_weight};
+use balance::utils::{BalanceConfig, get_balance_weight, generate_balance_config};
 use constants;
 use models::game::{Game, Player, PlayerRoom};
 use models::moves;
@@ -14,15 +14,45 @@ use score::calculator::get_final_score;
 use utils::{get_player_move_actions, get_game_turn_actions, get_start_feeding_and_breeding_actions};
 
 
+pub fn run_multiple_generations(moves_config: &MovesConfig, generations: i32) -> BalanceConfig {
+    let mut winner: BalanceConfig = mutate_config(&generate_balance_config());
+
+    let mut top_scorer: BalanceConfig = mutate_config(&generate_balance_config());
+    for _ in 0..generations {
+        let (w, t) = run_one_generation(moves_config, &winner, &top_scorer);
+        winner = w;
+        top_scorer= t;
+    }
+    winner
+}
+
+pub fn run_one_generation(moves_config: &MovesConfig, winner: &BalanceConfig, top_scorer: &BalanceConfig) -> (BalanceConfig, BalanceConfig) {
+    let mut configs: Vec<BalanceConfig> = vec![
+        winner.clone(),
+        top_scorer.clone(),
+    ];
+
+    for _ in 0..12 {
+        configs.push(mutate_config(winner));
+    }
+    for _ in 0..6 {
+        configs.push(mutate_config(top_scorer));
+    }
+
+    let (winner_index, top_scorer_index) = simulate_tournament(moves_config, &configs);
+
+    (configs[winner_index as usize].clone(), configs[top_scorer_index as usize].clone())
+}
+
 pub fn mutate_config(base: &BalanceConfig) -> BalanceConfig {
     let mut config = base.clone();
 
     for _ in 0..3 {
-        match random::<i32>() % 3 {
+        match random::<u32>() % 3 {
             0 => _mutate_hash(&mut config.actions),
             1 => _mutate_hash(&mut config.rooms),
             2 => _mutate_hash(&mut config.resources),
-            _ => panic!(),
+            _ => panic!("Random is broken"),
         }
     }
 
@@ -42,7 +72,7 @@ pub fn _mutate_hash(cfg: &mut HashMap<String, HashMap<String, f32>>) {
     *inner_hash.get_mut(&some_inner_key).unwrap() += delta;
 }
 
-pub fn simulate_tournament(moves_config: &MovesConfig, configs: Vec<BalanceConfig>) -> (i32, i32) {
+pub fn simulate_tournament(moves_config: &MovesConfig, configs: &Vec<BalanceConfig>) -> (i32, i32) {
     let mut score_table: Vec<i32> = vec![0; configs.len()];
     let mut sum_score_table: Vec<i32> = vec![0; configs.len()];
 

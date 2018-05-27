@@ -171,11 +171,11 @@ impl MoveAction for SetFirstPlayer {
 // ----- Game actions -----
 
 #[derive(Clone)]
-pub struct FirstPlayer {
+pub struct ReorderPlayers {
     pub player: String,
 }
 
-impl MoveAction for FirstPlayer {
+impl MoveAction for ReorderPlayers {
     fn get_name(&self) -> &str {
         ActionsConstants::FIRST_PLAYER
     }

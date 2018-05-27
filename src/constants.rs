@@ -36,7 +36,7 @@ impl InsideElement {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum OutsideElement {
     Meadow,
     Field,

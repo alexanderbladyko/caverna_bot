@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use constants;
 use models::game::{Game, Player};
 use models::moves;
+use moves::{constants as MovesConstants};
 
 pub fn get_game_with_2_players() -> Game {
     Game {
@@ -83,13 +84,13 @@ pub fn get_game_with_2_players() -> Game {
             },
         },
         available_moves: vec![
-            String::from("drift_mining"),
-            String::from("logging"),
-            String::from("wood_gathering"),
-            String::from("excavation"),
-            String::from("supplies"),
-            String::from("clearing"),
-            String::from("starting_player"),
+            String::from(MovesConstants::DRIFT_MINING),
+            String::from(MovesConstants::LOGGING),
+            String::from(MovesConstants::WOOD_GATHERING),
+            String::from(MovesConstants::EXCAVATION),
+            String::from(MovesConstants::SUPPLIES),
+            String::from(MovesConstants::CLEARING),
+            String::from(MovesConstants::STARTING_PLAYER),
         ],
     }
 }

@@ -77,7 +77,19 @@ fn main() {
             .help("Second balance config file")
             .long("second_config")
             .short("r")));
-    app = app.subcommand(SubCommand::with_name("run_multiple_generations"));
+    app = app.subcommand(SubCommand::with_name("run_multiple_generations"))
+        .about("runs simulation to get best config")
+        .arg(Arg::with_name("output")
+            .takes_value(true)
+            .help("Output file")
+            .long("output")
+            .short("o")
+        ).arg(Arg::with_name("generations")
+            .takes_value(true)
+            .help("Number of generations")
+            .long("generations")
+            .short("g")
+            .default_value("30"));
 
     {
         let available_moves = game.get_free_moves();
@@ -118,8 +130,9 @@ fn main() {
             let second_config = BalanceConfig::read_from_yaml(String::from(second_path));
             simulate_2_players_game(&moves_config, &first_config, &second_config);
         },
-        ("run_multiple_generations", Some(_)) => {
-            run_multiple_generations(&moves_config, 3);
+        ("run_multiple_generations", Some(cmd)) => {
+            let generations = cmd.value_of("generations").unwrap_or("30").parse::<i32>().unwrap();
+            run_multiple_generations(&moves_config, generations);
         },
         (name, Some(cmd)) => {
             _perform_move(&name, cmd, game, &config, &moves_config, next_game_file);

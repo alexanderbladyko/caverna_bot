@@ -119,7 +119,7 @@ impl Player {
 
     pub fn get_free_room_slots(&self) -> u32 {
         let mut count = 0;
-        for i in 0..16 {
+        for i in 0..12 {
             if self.rooms.iter().find(|r| r.position == i).is_none() {
                 count += 1;
             }
@@ -129,7 +129,7 @@ impl Player {
 
     pub fn get_free_field_slots(&self) -> u32 {
         let mut count = 0;
-        for i in 0..16 {
+        for i in 0..12 {
             if self.fields.iter().find(|r| r.position == i).is_none() {
                 count += 1;
             }

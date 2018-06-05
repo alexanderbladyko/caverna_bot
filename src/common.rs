@@ -16,3 +16,15 @@ macro_rules! hash_map(
         }
     );
 );
+
+macro_rules! hash_set(
+    { $($x:expr),+ } => {
+        {
+            let mut m = HashSet::new();
+            $(
+                m.insert($x);
+            )+
+            m
+        }
+    };
+);

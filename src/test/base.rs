@@ -3,6 +3,7 @@ use constants;
 use models::game::{Game, Player};
 use models::moves;
 use moves::{constants as MovesConstants};
+use moves::{config as MovesConfig};
 
 pub fn get_game_with_2_players() -> Game {
     Game {
@@ -92,6 +93,46 @@ pub fn get_game_with_2_players() -> Game {
             String::from(MovesConstants::CLEARING),
             String::from(MovesConstants::STARTING_PLAYER),
         ],
+    }
+}
+
+
+pub fn get_moves_config() -> MovesConfig::MovesConfig {
+    MovesConfig::MovesConfig {
+        drift_mining: MovesConfig::DriftMining {
+            stone_incr: 1,
+        },
+        logging: MovesConfig::Logging {
+            secondary_wood_incr: 1,
+            wood_incr: 1,
+        },
+        wood_gathering: MovesConfig::WoodGathering {
+            wood_incr: 1,
+        },
+        excavation: MovesConfig::Excavation {
+            stone_incr: 1,
+            secondary_stone_incr: 1,
+        },
+        supplies: MovesConfig::Supplies {
+            coal: 1,
+            food: 1,
+            gold: 1,
+            stone: 1,
+            wood: 1,
+        },
+        clearing: MovesConfig::Clearing {
+            wood_incr: 1,
+        },
+        starting_player: MovesConfig::StartingPlayer {
+            coal: 1,
+            food_incr: 1,
+            gem: 1,
+        },
+        ruby_mining: MovesConfig::RubyMining {
+            gems: 1,
+            gem_incr: 1,
+            from_turn: 2,
+        },
     }
 }
 
